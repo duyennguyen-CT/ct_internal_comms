@@ -140,6 +140,21 @@ table.mtab{table-layout:fixed;width:1736px}table.mtab td{vertical-align:top;min-
 .mc .mk{font-size:11px;color:var(--good);font-family:var(--f-data)}.mc .mn{font-size:11px;color:var(--warn)}
 .mrow{display:flex;flex-wrap:wrap;gap:8px}.mrow .mc{flex:1 1 230px;max-width:340px;margin:0}
 .mnote{margin:0;font-size:12px;color:var(--warn);}
+.mc p{white-space:pre-wrap}
+.mc .ml.day{font-family:var(--f-data);color:var(--push)}
+.mbar{position:sticky;top:0;z-index:6;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+.mbar button{font:inherit;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.mbar button:hover{border-color:var(--ink-3)}
+.mbar button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#3a2800}
+.mbar button.gh{font-weight:500;color:var(--ink-2)}
+.mbar .mstat{font-size:12px;color:var(--ink-3)}
+.mbar .msp{flex:1}
+#tab-msg.editing [data-f]{outline:1px dashed var(--line);outline-offset:2px;border-radius:4px;cursor:text}
+#tab-msg.editing [data-f]:hover{outline-color:var(--ink-3)}
+#tab-msg.editing [data-f]:focus{outline:2px solid var(--accent);background:var(--surface)}
+.mc.edited{box-shadow:inset 3px 0 0 var(--push)}
+.mc .med{display:none;font-size:10px;font-family:var(--f-data);color:var(--push)}
+.mc.edited .med{display:inline}
 @media (max-width:900px){.learn{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){.learn{grid-template-columns:1fr}.msgs{grid-template-columns:1fr}}
 
@@ -412,6 +427,13 @@ td.sgl{min-width:230px}td.sgl b{font-weight:600}td.sgl .cond{display:block;font-
 </div>
 </div>
 <div id="tab-msg" hidden>
+<div class="mbar">
+  <button type="button" id="mEdit" aria-pressed="false">✏️ Sửa nội dung</button>
+  <span class="mstat" id="mStat"></span>
+  <span class="msp"></span>
+  <button type="button" id="mExport" class="gh">⬇️ Tải bản sửa</button>
+  <button type="button" id="mReset" class="gh">↺ Về bản gốc</button>
+</div>
 <section>
   <div class="sec-head"><h2>Message tháng 10 theo segment</h2><p>Mỗi ô là 1 message trong lịch ở tab Segment plan T10. Message cho user chưa đủ điểm theo công thức: làm nhiệm vụ X → +N điểm → đổi voucher Y. Từ 04/10 tới 20/10, các sub K2, K3, K6 chuyển sang hook bTaskee Beauty (250 điểm) cho dịp 20/10. Slot nào đã có message cũ đạt từ 5 confirm / 1K reach trở lên (trung bình tất cả campaign là 0,3 / 1K) và đúng segment thì giữ nguyên copy cũ (viền xanh bên trái). Đếm ký tự theo guideline OnFlow: push title dưới 27, body dưới 80 (tối đa 3 dòng); in-app title dưới 35, body dưới 70 mỗi dòng, CTA dưới 20 và viết hoa.</p></div>
   <div class="learn">
@@ -646,6 +668,117 @@ document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.cl
 renderKpis();renderSeg();renderVou();
 {let k=location.hash==='#msg'?'msg':location.hash==='#plan'?'plan':location.hash==='#perf'?'perf':null;if(!k){try{k=localStorage.getItem('rwtab')}catch(e){}}if(k==='plan'||k==='msg')showTab(k);}
 render();
+
+/* === Message T10: ngày gửi + sửa nội dung ==================================
+   Lịch 10/2026 (01/10 là T5) nên mỗi cột thứ ứng với các ngày cố định bên
+   dưới. Message ở cột gộp là trigger theo hành vi, giữ nguyên mô tả điều
+   kiện thay vì gán ngày. Nội dung sửa lưu ở localStorage, không đồng bộ sang
+   máy khác — dùng "Tải bản sửa" để đưa vào file nếu muốn chốt vĩnh viễn.
+=========================================================================== */
+(function(){
+  const KEY='rwmsg10';
+  const DAYS=[[5,12,19,26],[6,13,20,27],[7,14,21,28],[1,8,15,22,29],
+              [2,9,16,23,30],[3,10,17,24,31],[4,11,18,25]];
+  // Tuần 1 = 05–11/10, theo đúng cách đánh số ở nhóm M1. Ngày 01–04/10 là tuần dở dang.
+  const wk=d=>d<5?0:Math.floor((d-5)/7)+1;
+  const fmtD=a=>a.map(d=>String(d).padStart(2,'0')).join(', ')+'/10';
+  const FIELDS=[['.ml','l'],['b','t'],['p','b'],['.mcta','c'],['.mn','n']];
+  const root=document.getElementById('tab-msg');
+  const $=id=>document.getElementById(id);
+  let store={},editing=false,timer=null;
+  try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+
+  root.querySelectorAll('table.mtab').forEach(tab=>{
+    let sub='';
+    tab.querySelectorAll('tbody tr').forEach(tr=>{
+      const sc=tr.querySelector('td.sc');if(sc)sub=sc.textContent.trim();
+      const ds=[...tr.children].filter(td=>td.classList.contains('d'));
+      [...tr.children].forEach(td=>{
+        const col=td.classList.contains('d')?ds.indexOf(td):-1;
+        td.querySelectorAll('.mc').forEach((mc,i)=>{
+          mc.dataset.mid=sub+'.'+(col<0?'s':col)+'.'+i;
+          const mt=mc.querySelector('.mt');if(col<0||!mt)return;
+          let ml=mt.querySelector('.ml');
+          if(!ml){ml=document.createElement('span');ml.className='ml';mt.appendChild(ml)}
+          if(!/\d{1,2}\/\d{1,2}/.test(ml.textContent)){
+            const q=ml.textContent.trim();
+            let list=DAYS[col];
+            if(/tuần lẻ/i.test(q)) list=list.filter(d=>wk(d)%2===1);
+            else if(/tuần chẵn/i.test(q)) list=list.filter(d=>wk(d)>0&&wk(d)%2===0);
+            ml.textContent=(q?q+' · ':'')+fmtD(list);
+            ml.classList.add('day');
+          }
+        });
+      });
+    });
+  });
+
+  root.querySelectorAll('.mc').forEach(mc=>{
+    const p=mc.querySelector('p');
+    if(p){p.innerHTML=p.innerHTML.replace(/<br\s*\/?>/gi,'\n');p.textContent=p.textContent}
+    const saved=store[mc.dataset.mid]||{};
+    FIELDS.forEach(([sel,f])=>{
+      const el=mc.querySelector(sel);if(!el)return;
+      el.dataset.f=f;el.dataset.orig=el.textContent;
+      if(saved[f]!=null)el.textContent=saved[f];
+    });
+    mark(mc);
+  });
+
+  function mark(mc){
+    const s=store[mc.dataset.mid],on=!!(s&&Object.keys(s).length);
+    mc.classList.toggle('edited',on);
+    if(on&&!mc.querySelector('.med')){
+      const b=document.createElement('span');b.className='med';b.textContent='đã sửa';
+      mc.querySelector('.mt').appendChild(b);
+    }
+  }
+  function status(saved){
+    const n=Object.keys(store).length;
+    $('mStat').textContent=n?`${n} message đã sửa${saved?' · đã lưu':''} · chỉ lưu trên trình duyệt này`
+      :(editing?'Bấm vào ngày, tiêu đề hoặc nội dung để sửa':'');
+  }
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}status(true)}
+
+  const PT=(()=>{const d=document.createElement('div');d.contentEditable='plaintext-only';
+    return d.contentEditable==='plaintext-only'?'plaintext-only':'true'})();
+  function setEdit(on){
+    editing=on;root.classList.toggle('editing',on);
+    const b=$('mEdit');b.setAttribute('aria-pressed',on?'true':'false');
+    b.textContent=on?'✓ Xong':'✏️ Sửa nội dung';
+    root.querySelectorAll('[data-f]').forEach(el=>el.contentEditable=on?PT:'false');
+    status();
+  }
+
+  root.addEventListener('input',e=>{
+    const el=e.target.closest('[data-f]');if(!el||!editing)return;
+    const mc=el.closest('.mc'),id=mc.dataset.mid,s=store[id]||(store[id]={});
+    if(el.textContent===el.dataset.orig)delete s[el.dataset.f];else s[el.dataset.f]=el.textContent;
+    if(!Object.keys(s).length)delete store[id];
+    mark(mc);clearTimeout(timer);timer=setTimeout(save,400);
+  });
+  $('mEdit').addEventListener('click',()=>setEdit(!editing));
+  $('mExport').addEventListener('click',()=>{
+    const out={};
+    root.querySelectorAll('.mc').forEach(mc=>{
+      if(!store[mc.dataset.mid])return;
+      const g={};FIELDS.forEach(([sel,f])=>{const el=mc.querySelector(sel);if(el)g[f]=el.textContent});
+      out[mc.dataset.mid]=g;
+    });
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify({updated:new Date().toISOString(),messages:out},null,2)],{type:'application/json'}));
+    a.download='reward-message-t10.json';a.click();URL.revokeObjectURL(a.href);
+  });
+  $('mReset').addEventListener('click',()=>{
+    if(!Object.keys(store).length)return;
+    if(!confirm('Bỏ toàn bộ nội dung đã sửa và quay lại bản gốc?'))return;
+    store={};try{localStorage.removeItem(KEY)}catch(e){}
+    root.querySelectorAll('[data-f]').forEach(el=>el.textContent=el.dataset.orig);
+    root.querySelectorAll('.mc').forEach(mc=>mark(mc));
+    status();
+  });
+  status();
+})();
 </script>
 
 </body>
