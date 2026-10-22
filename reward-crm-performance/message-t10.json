@@ -1,5 +1,44 @@
 {
-  "updated": null,
-  "updatedBy": null,
-  "messages": {}
+  "updated": "2026-10-22T10:05:00.000Z",
+  "updatedBy": "dashboard",
+  "messages": {
+    "P2.4.0": {
+      "l": "02, 09, 16,23 30/10",
+      "t": "ĐÃ LẤY VOUCHER CHƯA?",
+      "b": "Breadtalk, KFC, Three O' Clock cùng nhiều ưu đãi đang chờ bạn đổi bằng Điểm Tốt. Điểm danh hàng ngày tích điểm ngay!\n\n22/10 17h\n\nT7 đi quẩy BigBang?\nĐổi voucher 50k book bTaskee Beauty make up rồi đi nè! 💅"
+    },
+    "P3.6.1": {
+      "l": "tuần chẵn · 18/10",
+      "t": "Chủ nhật trà sữa -20% 🧋",
+      "b": "Bạn đủ 300 điểm đổi Three O'Clock\nGiảm 20% tối đa 40K, rủ bạn đi luôn",
+      "n": ""
+    },
+    "R1.5.0": {
+      "l": "03, 10, 17, 31/10",
+      "t": "TÍCH ĐIỂM ĐỔI KFC NÈ ⚠️",
+      "b": "Đổi ngay ly nước, bánh phô mai Breadtalk hay 20K KFC chỉ từ 300 điểm . \nNhấn làm thêm nhiệm vụ nhận điểm ngay !\n\n24/10 17h\nChờ concert thì làm gì ⚠️\nLàm nhiệm vụ đổi voucher Breadtalk, KFC rồi lát quẩy xong ăn\n"
+    },
+    "D2.6.3": {
+      "l": "25/10 22h",
+      "t": "Há ru hà ru! Concert đã không 🍗",
+      "b": "Đói thì đổi KFC Combo Cặp Đôi 149K ăn khuya liền"
+    },
+    "E3.s.0": {
+      "l": "18/10 (CN)",
+      "t": "Quà 20/10 cho bạn nè 💐",
+      "b": "Chợ Tốt tặng điểm mừng 20/10\nĐiểm danh gom đủ 250 đổi bTaskee Beauty",
+      "n": ""
+    },
+    "M1.s.0": {
+      "l": "Tuần 1 · 10/10 (T7)",
+      "t": "Cali đóng cửa @@",
+      "b": "Dùng 300 Điểm qua The New Gym tập free 15 ngày nè"
+    },
+    "M2.s.1": {
+      "l": "24/10 (T7) 22h",
+      "t": "Quẩy concert về đói? 🍗",
+      "b": "Vô app đổi ngay voucher 20k KFC nè!",
+      "c": "ĐỔI NGAY"
+    }
+  }
 }
