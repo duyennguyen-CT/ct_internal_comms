@@ -147,14 +147,25 @@ table.mtab{table-layout:fixed;width:1736px}table.mtab td{vertical-align:top;min-
 .mbar button:hover{border-color:var(--ink-3)}
 .mbar button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#3a2800}
 .mbar button.gh{font-weight:500;color:var(--ink-2)}
+.mbar button.pub{background:var(--push);border-color:var(--push);color:#fff}
+.mbar button:disabled{opacity:.45;cursor:not-allowed}
+.mbar button:disabled:hover{border-color:var(--line)}
 .mbar .mstat{font-size:12px;color:var(--ink-3)}
 .mbar .msp{flex:1}
+.mtok{display:none;flex-basis:100%;gap:8px;align-items:flex-start;flex-wrap:wrap;padding:10px 12px;margin-top:2px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.mtok.on{display:flex}
+.mtok input{font:inherit;font-size:12.5px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-width:260px;flex:1}
+.mtok .hint{flex-basis:100%;margin:0;font-size:11.5px;line-height:1.55;color:var(--ink-3)}
+.mtok .hint a{color:var(--push)}
+.mtok .hint code{font-family:var(--f-data);font-size:11px;color:var(--ink-2)}
 #tab-msg.editing [data-f]{outline:1px dashed var(--line);outline-offset:2px;border-radius:4px;cursor:text}
 #tab-msg.editing [data-f]:hover{outline-color:var(--ink-3)}
 #tab-msg.editing [data-f]:focus{outline:2px solid var(--accent);background:var(--surface)}
 .mc.edited{box-shadow:inset 3px 0 0 var(--push)}
+.mc.pubbed{box-shadow:inset 3px 0 0 var(--ink-3)}
 .mc .med{display:none;font-size:10px;font-family:var(--f-data);color:var(--push)}
-.mc.edited .med{display:inline}
+.mc.edited .med,.mc.pubbed .med{display:inline}
+.mc.pubbed .med{color:var(--ink-3)}
 @media (max-width:900px){.learn{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){.learn{grid-template-columns:1fr}.msgs{grid-template-columns:1fr}}
 
@@ -431,8 +442,20 @@ td.sgl{min-width:230px}td.sgl b{font-weight:600}td.sgl .cond{display:block;font-
   <button type="button" id="mEdit" aria-pressed="false">✏️ Sửa nội dung</button>
   <span class="mstat" id="mStat"></span>
   <span class="msp"></span>
+  <button type="button" id="mPub" class="pub" disabled>⬆️ Đăng cho cả team</button>
+  <button type="button" id="mTokBtn" class="gh" aria-expanded="false">🔑 Token</button>
   <button type="button" id="mExport" class="gh">⬇️ Tải bản sửa</button>
   <button type="button" id="mReset" class="gh">↺ Về bản gốc</button>
+  <div class="mtok" id="mTok">
+    <input type="password" id="mTokIn" placeholder="Dán GitHub fine-grained token (github_pat_…)" autocomplete="off" spellcheck="false">
+    <button type="button" id="mTokSave">Lưu token</button>
+    <button type="button" id="mTokDel" class="gh">Xoá token</button>
+    <p class="hint">Token chỉ nằm trong trình duyệt của bạn (localStorage), không bao giờ được ghi vào repo.
+      Tạo tại <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> →
+      <b>Repository access: Only select repositories → ct_internal_comms</b> →
+      <b>Permissions → Repository permissions → Contents: Read and write</b>.
+      Sau khi đăng, GitHub Pages cần khoảng 1 phút để build thì người khác mới thấy nội dung mới.</p>
+  </div>
 </div>
 <section>
   <div class="sec-head"><h2>Message tháng 10 theo segment</h2><p>Mỗi ô là 1 message trong lịch ở tab Segment plan T10. Message cho user chưa đủ điểm theo công thức: làm nhiệm vụ X → +N điểm → đổi voucher Y. Từ 04/10 tới 20/10, các sub K2, K3, K6 chuyển sang hook bTaskee Beauty (250 điểm) cho dịp 20/10. Slot nào đã có message cũ đạt từ 5 confirm / 1K reach trở lên (trung bình tất cả campaign là 0,3 / 1K) và đúng segment thì giữ nguyên copy cũ (viền xanh bên trái). Đếm ký tự theo guideline OnFlow: push title dưới 27, body dưới 80 (tối đa 3 dòng); in-app title dưới 35, body dưới 70 mỗi dòng, CTA dưới 20 và viết hoa.</p></div>
@@ -669,14 +692,21 @@ renderKpis();renderSeg();renderVou();
 {let k=location.hash==='#msg'?'msg':location.hash==='#plan'?'plan':location.hash==='#perf'?'perf':null;if(!k){try{k=localStorage.getItem('rwtab')}catch(e){}}if(k==='plan'||k==='msg')showTab(k);}
 render();
 
-/* === Message T10: ngày gửi + sửa nội dung ==================================
+/* === Message T10: ngày gửi + sửa nội dung dùng chung =======================
    Lịch 10/2026 (01/10 là T5) nên mỗi cột thứ ứng với các ngày cố định bên
    dưới. Message ở cột gộp là trigger theo hành vi, giữ nguyên mô tả điều
-   kiện thay vì gán ngày. Nội dung sửa lưu ở localStorage, không đồng bộ sang
-   máy khác — dùng "Tải bản sửa" để đưa vào file nếu muốn chốt vĩnh viễn.
+   kiện thay vì gán ngày.
+
+   Nội dung hiển thị xếp 3 lớp: bản gốc trong file này < bản đã đăng trong
+   message-t10.json < bản nháp trong localStorage. Bấm "Đăng cho cả team" là
+   commit message-t10.json qua GitHub API, từ đó mọi người đều thấy.
+   Token do người dùng tự dán, chỉ nằm trong localStorage của máy họ —
+   không bao giờ nằm trong file này hay trong repo.
 =========================================================================== */
 (function(){
-  const KEY='rwmsg10';
+  const KEY='rwmsg10', MKEY='rwmsg10_pub', TKEY='rwgh_tok';
+  const REPO='duyennguyen-CT/ct_internal_comms';
+  const FILE='reward-crm-performance/message-t10.json';
   const DAYS=[[5,12,19,26],[6,13,20,27],[7,14,21,28],[1,8,15,22,29],
               [2,9,16,23,30],[3,10,17,24,31],[4,11,18,25]];
   // Tuần 1 = 05–11/10, theo đúng cách đánh số ở nhóm M1. Ngày 01–04/10 là tuần dở dang.
@@ -685,7 +715,7 @@ render();
   const FIELDS=[['.ml','l'],['b','t'],['p','b'],['.mcta','c'],['.mn','n']];
   const root=document.getElementById('tab-msg');
   const $=id=>document.getElementById(id);
-  let store={},editing=false,timer=null;
+  let store={},pub={},pubMeta={updated:null,updatedBy:null},editing=false,timer=null;
   try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
 
   root.querySelectorAll('table.mtab').forEach(tab=>{
@@ -716,29 +746,108 @@ render();
   root.querySelectorAll('.mc').forEach(mc=>{
     const p=mc.querySelector('p');
     if(p){p.innerHTML=p.innerHTML.replace(/<br\s*\/?>/gi,'\n');p.textContent=p.textContent}
-    const saved=store[mc.dataset.mid]||{};
     FIELDS.forEach(([sel,f])=>{
       const el=mc.querySelector(sel);if(!el)return;
       el.dataset.f=f;el.dataset.orig=el.textContent;
-      if(saved[f]!=null)el.textContent=saved[f];
     });
-    mark(mc);
   });
 
+  /* base(el) = nội dung người khác đang thấy: bản đã đăng, nếu chưa có thì bản gốc */
+  const base=(id,f,el)=>{const g=pub[id];return g&&g[f]!=null?g[f]:el.dataset.orig};
+  function applyAll(){
+    root.querySelectorAll('.mc').forEach(mc=>{
+      const id=mc.dataset.mid,d=store[id]||{};
+      FIELDS.forEach(([sel,f])=>{
+        const el=mc.querySelector(sel);if(!el||el===document.activeElement)return;
+        el.textContent=d[f]!=null?d[f]:base(id,f,el);
+      });
+      mark(mc);
+    });
+  }
   function mark(mc){
-    const s=store[mc.dataset.mid],on=!!(s&&Object.keys(s).length);
-    mc.classList.toggle('edited',on);
-    if(on&&!mc.querySelector('.med')){
-      const b=document.createElement('span');b.className='med';b.textContent='đã sửa';
-      mc.querySelector('.mt').appendChild(b);
+    const id=mc.dataset.mid,s=store[id];
+    const draft=!!(s&&Object.keys(s).length), p=!!pub[id];
+    mc.classList.toggle('edited',draft);
+    mc.classList.toggle('pubbed',!draft&&p);
+    let b=mc.querySelector('.med');
+    if(draft||p){
+      if(!b){b=document.createElement('span');b.className='med';mc.querySelector('.mt').appendChild(b)}
+      b.textContent=draft?'chưa đăng':'đã đăng';
     }
   }
-  function status(saved){
+  function status(msg){
     const n=Object.keys(store).length;
-    $('mStat').textContent=n?`${n} message đã sửa${saved?' · đã lưu':''} · chỉ lưu trên trình duyệt này`
-      :(editing?'Bấm vào ngày, tiêu đề hoặc nội dung để sửa':'');
+    $('mPub').disabled=!n;
+    if(msg){$('mStat').textContent=msg;return}
+    const when=pubMeta.updated?new Date(pubMeta.updated).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):null;
+    const pubTxt=when?`Bản chung cập nhật ${when}`:'Chưa có bản đăng chung';
+    $('mStat').textContent=n?`${n} message sửa chưa đăng · bấm "Đăng cho cả team" để mọi người cùng thấy`
+      :(editing?'Bấm vào ngày, tiêu đề hoặc nội dung để sửa':pubTxt);
   }
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}status(true)}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}status()}
+
+  /* ---- bản đã đăng ------------------------------------------------------ */
+  function readMirror(){try{return JSON.parse(localStorage.getItem(MKEY)||'null')}catch(e){return null}}
+  async function loadPub(){
+    let remote=null;
+    try{
+      const r=await fetch('message-t10.json?t='+Date.now(),{cache:'no-store'});
+      if(r.ok)remote=await r.json();
+    }catch(e){}
+    const mine=readMirror();
+    // Pages mất ~1 phút để build, nên nếu bản mình vừa đăng mới hơn thì ưu tiên nó
+    let use=remote;
+    if(mine&&mine.updated&&(!remote||!remote.updated||mine.updated>remote.updated))use=mine;
+    if(use&&use.messages){pub=use.messages;pubMeta={updated:use.updated||null,updatedBy:use.updatedBy||null}}
+    applyAll();status();
+  }
+
+  function b64(s){
+    const by=new TextEncoder().encode(s);let out='';
+    for(let i=0;i<by.length;i+=0x8000)out+=String.fromCharCode.apply(null,by.subarray(i,i+0x8000));
+    return btoa(out);
+  }
+  const tok=()=>{try{return localStorage.getItem(TKEY)||''}catch(e){return ''}};
+  async function publish(){
+    if(!Object.keys(store).length)return;
+    if(!tok()){openTok();status('Cần dán token GitHub trước khi đăng');return}
+    const merged={};
+    Object.keys(pub).forEach(id=>merged[id]=Object.assign({},pub[id]));
+    Object.keys(store).forEach(id=>merged[id]=Object.assign({},merged[id]||{},store[id]));
+    const body={updated:new Date().toISOString(),updatedBy:'dashboard',messages:merged};
+    const url='https://api.github.com/repos/'+REPO+'/contents/'+FILE;
+    const H={Authorization:'Bearer '+tok(),Accept:'application/vnd.github+json'};
+    $('mPub').disabled=true;status('Đang đăng…');
+    try{
+      const g=await fetch(url+'?ref=main&t='+Date.now(),{headers:H,cache:'no-store'});
+      if(g.status===401||g.status===403)throw new Error('auth');
+      if(!g.ok&&g.status!==404)throw new Error('http '+g.status);
+      const sha=g.ok?(await g.json()).sha:undefined;
+      const p=await fetch(url,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},H),
+        body:JSON.stringify({message:'Reward dashboard: cập nhật nội dung message T10',branch:'main',
+          content:b64(JSON.stringify(body,null,2)+'\n'),sha})});
+      if(p.status===401||p.status===403)throw new Error('auth');
+      if(p.status===409||p.status===422)throw new Error('conflict');
+      if(!p.ok)throw new Error('http '+p.status);
+      pub=merged;pubMeta={updated:body.updated,updatedBy:body.updatedBy};
+      store={};
+      try{localStorage.removeItem(KEY);localStorage.setItem(MKEY,JSON.stringify(body))}catch(e){}
+      applyAll();
+      status('✓ Đã đăng — người khác sẽ thấy sau khi GitHub Pages build xong (~1 phút)');
+    }catch(err){
+      const m=err.message==='auth'?'Token không hợp lệ hoặc thiếu quyền Contents: Read and write'
+        :err.message==='conflict'?'Có người vừa đăng bản khác, tải lại trang rồi đăng lại'
+        :'Không đăng được ('+err.message+') — kiểm tra mạng rồi thử lại';
+      status('✕ '+m);$('mPub').disabled=false;
+    }
+  }
+
+  function openTok(on){
+    const p=$('mTok'),b=$('mTokBtn'),v=on===undefined?!p.classList.contains('on'):on;
+    p.classList.toggle('on',v);b.setAttribute('aria-expanded',v?'true':'false');
+    b.textContent=(tok()?'🔑 Token ✓':'🔑 Token');
+    if(v)$('mTokIn').focus();
+  }
 
   const PT=(()=>{const d=document.createElement('div');d.contentEditable='plaintext-only';
     return d.contentEditable==='plaintext-only'?'plaintext-only':'true'})();
@@ -752,32 +861,44 @@ render();
 
   root.addEventListener('input',e=>{
     const el=e.target.closest('[data-f]');if(!el||!editing)return;
-    const mc=el.closest('.mc'),id=mc.dataset.mid,s=store[id]||(store[id]={});
-    if(el.textContent===el.dataset.orig)delete s[el.dataset.f];else s[el.dataset.f]=el.textContent;
+    const mc=el.closest('.mc'),id=mc.dataset.mid,s=store[id]||(store[id]={}),f=el.dataset.f;
+    if(el.textContent===base(id,f,el))delete s[f];else s[f]=el.textContent;
     if(!Object.keys(s).length)delete store[id];
     mark(mc);clearTimeout(timer);timer=setTimeout(save,400);
   });
   $('mEdit').addEventListener('click',()=>setEdit(!editing));
+  $('mPub').addEventListener('click',publish);
+  $('mTokBtn').addEventListener('click',()=>openTok());
+  $('mTokSave').addEventListener('click',()=>{
+    const v=$('mTokIn').value.trim();
+    if(!v){status('Chưa có token để lưu');return}
+    try{localStorage.setItem(TKEY,v)}catch(e){}
+    $('mTokIn').value='';openTok(false);status('Đã lưu token trên trình duyệt này');
+  });
+  $('mTokDel').addEventListener('click',()=>{
+    try{localStorage.removeItem(TKEY)}catch(e){}
+    $('mTokIn').value='';openTok(false);status('Đã xoá token khỏi trình duyệt này');
+  });
   $('mExport').addEventListener('click',()=>{
     const out={};
     root.querySelectorAll('.mc').forEach(mc=>{
-      if(!store[mc.dataset.mid])return;
+      const id=mc.dataset.mid;if(!store[id]&&!pub[id])return;
       const g={};FIELDS.forEach(([sel,f])=>{const el=mc.querySelector(sel);if(el)g[f]=el.textContent});
-      out[mc.dataset.mid]=g;
+      out[id]=g;
     });
     const a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([JSON.stringify({updated:new Date().toISOString(),messages:out},null,2)],{type:'application/json'}));
-    a.download='reward-message-t10.json';a.click();URL.revokeObjectURL(a.href);
+    a.download='message-t10.json';a.click();URL.revokeObjectURL(a.href);
   });
   $('mReset').addEventListener('click',()=>{
     if(!Object.keys(store).length)return;
-    if(!confirm('Bỏ toàn bộ nội dung đã sửa và quay lại bản gốc?'))return;
+    if(!confirm('Bỏ các sửa đổi chưa đăng và quay lại bản đang hiển thị cho cả team?'))return;
     store={};try{localStorage.removeItem(KEY)}catch(e){}
-    root.querySelectorAll('[data-f]').forEach(el=>el.textContent=el.dataset.orig);
-    root.querySelectorAll('.mc').forEach(mc=>mark(mc));
-    status();
+    applyAll();status();
   });
-  status();
+  applyAll();status();
+  loadPub();
+  openTok(false);
 })();
 </script>
 
