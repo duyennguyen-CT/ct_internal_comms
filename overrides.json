@@ -2,22 +2,22 @@
   "updated": "2026-10-27T07:58:04.391Z",
   "updatedBy": "dashboard",
   "items": {
-    "div.wrap[0]>header.top[0]>div.brand[0]>div.sub[1]": {
+    "internal-comms-pulse|div.wrap[0]>header.top[0]>div.brand[0]>div.sub[1]": {
       "d": 1
     },
-    "#bv-sub": {
+    "internal-comms-pulse|#bv-sub": {
       "d": 1
     },
-    "#fun-note": {
+    "internal-comms-pulse|#fun-note": {
       "d": 1
     },
-    "div.wrap[0]>p.section-sub[1]": {
+    "internal-comms-pulse|div.wrap[0]>p.section-sub[1]": {
       "d": 1
     },
-    "#foot": {
+    "internal-comms-pulse|#foot": {
       "t": "Additivity model. Only lead_daily/lead_mth are sum()-based (green Σ add) and aggregate freely. dau, new_dau, return_dau, dau_w_lead, mau, mau_w_lead are count(distinct clientId) at the date·platform·vertical·channel grain — exact only for a single slice; anything summed across slices carries the amber Σ not de-dup tag. Verified: lead_mth reconciles exactly with Σ daily lead_daily per slice, and every slice's mau ≥ its peak daily dau.Adview funnel (top scorecards). DAU → DAU w/ adview → DAU w/ lead with their conversion rates come from a separate traffic_visit_detail pull (the CRM session universe: channelGrouping='Growth' or a CRM medium), because adview_count does not exist in daumaulead_mkt_rp. All three counts share one DAU denominator so CR adview and CR lead are coherent. This pull is capped to the trailing 90 days; wider window selections show that 90-day funnel. Its DAU is a different measurement universe than daumaulead, so it won't match the sections below to the person.\n How to get exact reach. Set one platform + one vertical; the funnel scorecards, matrix cell and drill-down then show de-duplicated DAU. The matrix always shows exact per-slice numbers regardless of the filters.  Source contribution is a separate daily 90-day pull from traffic_visit_detail ∩ traffic_lead_detail (the same CRM session universe as daumaulead: channelGrouping='Growth' or a CRM medium), with its own time-window filter. source = the comms tool (source field), sub-channel = the surface (medium), vertical = content category via dim.d_category.metric_layer_vertical. It has two views: By source (uses a source-level rollup, so each source's DAU is exact — de-duped across its sub-channels) and Source × sub-channel. Leads are additive; DAU / DAU-with-lead are avg-daily distinct users — exact per row, but the column Total sums rows so it carries Σ not de-dup.  Snapshot 2026-10-27 · chotot-dwh.ct_product_analytics.daumaulead_mkt_rp · channel Growth (CRM) · source block traffic_visit_detail+traffic_lead_detail."
     },
-    "#sc-sub": {
+    "internal-comms-pulse|#sc-sub": {
       "d": 1
     }
   }
