@@ -207,24 +207,6 @@ select.msel{font:inherit;font-size:12.5px;padding:6px 10px;border-radius:8px;bor
     <div class="ctl"><span class="ctl-label">Month</span><select class="msel" id="bvMonthSel"></select></div>
     <div class="range-note">All four metrics are for the selected <b>month</b> &#183; DAU metrics = avg daily distinct, MAU = whole-month distinct.</div>
   </div>
-  <div class="grid g-2b" id="bvGrid">
-    <div class="panel">
-      <div class="p-head"><div><div class="p-title">DAU <span id="bv-tag-dau"></span></div><div class="p-desc" id="bv-dau-desc">Avg daily reach in the month</div></div><button class="exp-btn" type="button" data-exp="bv_dau" title="T&#7843;i CSV">&#8681; CSV</button></div>
-      <div class="chart-holder" id="bv_dau"></div>
-    </div>
-    <div class="panel">
-      <div class="p-head"><div><div class="p-title">DAU with lead <span id="bv-tag-dwl"></span></div><div class="p-desc" id="bv-dwl-desc">Avg daily users who submitted a lead</div></div><button class="exp-btn" type="button" data-exp="bv_dwl" title="T&#7843;i CSV">&#8681; CSV</button></div>
-      <div class="chart-holder" id="bv_dwl"></div>
-    </div>
-    <div class="panel">
-      <div class="p-head"><div><div class="p-title">MAU <span id="bv-tag-mau"></span></div><div class="p-desc" id="bv-mau-desc">Monthly reach</div></div><button class="exp-btn" type="button" data-exp="bv_mau" title="T&#7843;i CSV">&#8681; CSV</button></div>
-      <div class="chart-holder" id="bv_mau"></div>
-    </div>
-    <div class="panel">
-      <div class="p-head"><div><div class="p-title">MAU with lead <span id="bv-tag-mauwl"></span></div><div class="p-desc" id="bv-mauwl-desc">Monthly users with lead</div></div><button class="exp-btn" type="button" data-exp="bv_mauwl" title="T&#7843;i CSV">&#8681; CSV</button></div>
-      <div class="chart-holder" id="bv_mauwl"></div>
-    </div>
-  </div>
   <div class="tbl-tools"><button class="exp-btn" type="button" data-exp="bvTable" title="T&#7843;i CSV">&#8681; CSV</button></div>
   <div class="tbl-wrap"><table class="sum" id="bvTable"><thead></thead><tbody></tbody></table></div>
 
@@ -638,21 +620,10 @@ function hbars(holderId,items,opt){opt=opt||{};
 }
 
 // ---- by vertical ----
-function vbars(holderId,items){
-  const holder=$("#"+holderId);holder.innerHTML="";
-  const maxV=Math.max(1,...items.map(it=>it.val==null?0:it.val));
-  const wrap=el("div");wrap.style.padding="4px 2px";
-  items.forEach(it=>{const w=it.val==null?0:(it.val/maxV)*100;const row=el("div");row.style.cssText="margin:0 0 11px";
-    row.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--ink-2);font-weight:500;display:inline-flex;gap:7px;align-items:center"><span class="sw sw${it.ci+1}" style="width:9px;height:9px;border-radius:2px"></span>${it.label}</span><span class="mono" style="color:var(--ink);font-weight:600">${it.val==null?"—":compact(it.val)}${it.sub?`<span style="color:var(--muted);font-weight:400"> · ${it.sub}</span>`:""}</span></div><div style="height:9px;background:var(--plane);border-radius:5px;overflow:hidden"><div style="height:100%;width:${w.toFixed(1)}%;background:var(--series-${it.ci+1});border-radius:5px"></div></div>`;
-    wrap.appendChild(row);});
-  holder.appendChild(wrap);
-}
 function renderByVertical(){
   const p=pIdx(),slice=p>=0; // exact only when a single platform is selected
-  const tag=slice?'<span class="tag-add exact">exact</span>':'<span class="tag-add warn">Σ not de-dup</span>';
-  ["dau","dwl","mau","mauwl"].forEach(k=>{const e=$("#bv-tag-"+k);if(e)e.innerHTML=tag;});
   const ym=state.month,mi=MONTHS.indexOf(ym),mlab=ymLabel(ym);
-  const dauItems=[],dwlItems=[],mauItems=[],mauwlItems=[],trows=[];
+  const trows=[];
   VERT.forEach((v,vi)=>{
     // Whole section is driven by the selected MONTH: DAU/DAU-w-lead = avg daily distinct
     // within that month; MAU/MAU-w-lead = the month's whole-month distinct.
@@ -661,17 +632,8 @@ function renderByVertical(){
     const avgDau=sum(rows,r=>r[3])/days,avgDwl=sum(rows,r=>r[6])/days,convD=avgDau?avgDwl/avgDau:0;
     const mrows=MON.filter(r=>r[0]===mi&&r[2]===vi&&(p<0||r[1]===p));
     const mau=sum(mrows,r=>r[3]),mauwl=sum(mrows,r=>r[4]),convM=mau?mauwl/mau:0;
-    dauItems.push({label:VLABEL[v],val:avgDau,ci:vi});
-    dwlItems.push({label:VLABEL[v],val:avgDwl,ci:vi,sub:pct(convD,0)+" conv"});
-    mauItems.push({label:VLABEL[v],val:mau||null,ci:vi});
-    mauwlItems.push({label:VLABEL[v],val:mauwl||null,ci:vi,sub:mau?pct(convM,0)+" conv":""});
     trows.push({v,avgDau,avgDwl,convD,mau,mauwl,convM});
   });
-  vbars("bv_dau",dauItems);vbars("bv_dwl",dwlItems);vbars("bv_mau",mauItems);vbars("bv_mauwl",mauwlItems);
-  $("#bv-dau-desc").textContent="Avg daily reach · "+mlab;
-  $("#bv-dwl-desc").textContent="Avg daily users w/ lead · "+mlab;
-  $("#bv-mau-desc").textContent="Monthly reach · "+mlab;
-  $("#bv-mauwl-desc").textContent="Monthly users with lead · "+mlab;
   const scopeTxt=slice?`<b style="color:var(--ink-2)">${state.plat}</b> platform — exact distinct users`
     :`all platforms, summed across platform (<span class="tag-add warn" style="vertical-align:middle">Σ not de-dup</span> — over-counts users active on more than one platform)`;
   $("#bv-sub").innerHTML=`All four metrics are for <b>${mlab}</b>: <b>DAU</b> &amp; <b>DAU-with-lead</b> are <b>avg daily</b> distinct within the month; <b>MAU</b> &amp; <b>MAU-with-lead</b> are whole-month distinct. Scope: ${scopeTxt}. Pick a single platform above for exact per-vertical distinct counts.`;
@@ -679,10 +641,6 @@ function renderByVertical(){
   thead.innerHTML=`<tr><th>Vertical</th><th>Avg DAU</th><th>Avg DAU w/ lead</th><th>DAU conv.</th><th>MAU</th><th>MAU w/ lead</th><th>MAU conv.</th></tr>`;
   tbody.innerHTML="";
   trows.forEach(r=>{const tr=el("tr");tr.innerHTML=`<td class="dim">${VLABEL[r.v]} <span style="opacity:.6">${r.v}</span></td><td class="num">${fmt(r.avgDau)}</td><td class="num">${fmt(r.avgDwl)}</td><td class="num">${pct(r.convD,1)}</td><td class="num">${r.mau?fmt(r.mau):"—"}</td><td class="num">${r.mauwl?fmt(r.mauwl):"—"}</td><td class="num">${r.mau?pct(r.convM,1):"—"}</td>`;tbody.appendChild(tr);});
-  setExport("bv_dau",["Vertical","Month","Avg daily DAU"],trows.map(r=>[r.v,ym,Math.round(r.avgDau)]));
-  setExport("bv_dwl",["Vertical","Month","Avg daily DAU w/ lead","DAU conversion %"],trows.map(r=>[r.v,ym,Math.round(r.avgDwl),(r.convD*100).toFixed(2)]));
-  setExport("bv_mau",["Vertical","Month","MAU"],trows.map(r=>[r.v,ym,r.mau||0]));
-  setExport("bv_mauwl",["Vertical","Month","MAU w/ lead","MAU conversion %"],trows.map(r=>[r.v,ym,r.mauwl||0,(r.convM*100).toFixed(2)]));
   setExport("bvTable",["Vertical","Month","Avg DAU","Avg DAU w/ lead","DAU conv %","MAU","MAU w/ lead","MAU conv %"],
     trows.map(r=>[r.v,ym,Math.round(r.avgDau),Math.round(r.avgDwl),(r.convD*100).toFixed(2),r.mau||0,r.mauwl||0,r.mau?(r.convM*100).toFixed(2):""]));
 }
@@ -1055,5 +1013,6 @@ fillMonthSelect();setupCustom();renderFoot();renderAll();renderSourceTable();
 let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(renderAll,150);});
 })();
 </script>
+<script src="../edit-layer.js"></script>
 </body>
 </html>

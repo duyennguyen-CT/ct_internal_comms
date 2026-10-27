@@ -215,19 +215,8 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
 .mv-more{margin-top:10px;border:1px solid var(--hair-strong);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:6px 12px;font:inherit;font-size:12px;cursor:pointer;display:none;gap:6px;align-items:center}
 .mv-more:hover{border-color:var(--accent);color:var(--accent)}
 
-/* horizontal-bar breakdown (metric by group) */
-.bk-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
-.bk-cell{border:1px solid var(--hair);border-radius:12px;padding:12px 14px 13px;background:var(--surface-2)}
-.bk-cell-title{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:9px;text-transform:uppercase;letter-spacing:.06em}
-.hb-wrap{display:flex;flex-direction:column;gap:6px}
-.hb-row{display:grid;grid-template-columns:88px 1fr 62px;gap:10px;align-items:center}
-.hb-label{font-size:11.5px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hb-row.strong .hb-label{color:var(--ink);font-weight:700}
 .hb-track{position:relative;height:16px;background:var(--plane);border:1px solid var(--hair);border-radius:5px;overflow:hidden}
 .hb-bar{position:absolute;left:0;top:0;height:100%;border-radius:4px;opacity:.85;transition:width .35s ease}
-.hb-row.strong .hb-bar{opacity:1}
-.hb-val{font-family:"IBM Plex Mono",monospace;font-size:11.5px;text-align:right;color:var(--ink)}
-.hb-empty{font-size:11.5px;color:var(--muted);padding:8px 2px}
 .chip.kw[aria-pressed="true"]{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
 /* compact table filter bar (aligned label column) */
 .tf{border:1px solid var(--hair);border-radius:12px;padding:9px 14px 10px;margin:2px 0 12px;background:var(--surface-2)}
@@ -237,7 +226,7 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
 .tf .seg{padding:2px}.tf .seg button{padding:5px 9px}
 .tf .chip{padding:4px 10px}
 .tf .ms-box{min-width:220px;padding:3px 6px}
-@media (max-width:700px){.bk-grid{grid-template-columns:1fr}.tf .ctl-label{min-width:0;width:100%}}
+@media (max-width:700px){.tf .ctl-label{min-width:0;width:100%}}
 @media (max-width:900px){.kpis.k4{grid-template-columns:repeat(2,1fr)}.kpis.k3{grid-template-columns:repeat(3,1fr)}.kpis.k6{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:560px){.wrap{padding:18px 14px 48px}h1{font-size:21px}.kpis.k3,.kpis.k4,.kpis.k6{grid-template-columns:1fr 1fr}
   .fn-row{grid-template-columns:1fr;gap:3px;padding:6px 0;border-bottom:1px solid var(--hair)}.fn-row.branch .fn-label{padding-left:0}.fn-row.branch .fn-label:before{display:none}.fn-conv{text-align:left}.fn-conv .fn-conv-lbl{display:inline;margin-left:6px}
@@ -293,21 +282,8 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
     </div>
 
     <section class="kpis k4" id="dKpis"></section>
-
-    <div class="panel" id="dBkChartPanel" style="margin-top:16px">
-      <div class="p-head">
-        <div><div class="p-title">Metric theo nh&#243;m</div><div class="p-desc">1 metric &mdash; chia theo <b>channel / platform / side / delivery type</b>, k&#232;m thanh <b>All</b> (t&#7893;ng). Theo c&#7917;a s&#7893; &amp; b&#7897; l&#7885;c hi&#7879;n t&#7841;i.</div></div>
-        <div class="seg" id="dBcMetSeg">
-          <button data-m="sent" type="button" aria-pressed="true">Sent</button>
-          <button data-m="reach" type="button">Reach</button>
-          <button data-m="impress" type="button">Impress</button>
-          <button data-m="opens" type="button">Direct open</button>
-          <button data-m="deliv_rate" type="button">Deliver rate</button>
-          <button data-m="open_rate" type="button">Open rate</button>
-        </div>
-      </div>
-      <div class="bk-grid" id="dBcGrid"></div>
-    </div>
+    <section class="kpis k6" id="dPerfKpis" style="margin-top:12px"></section>
+    <div class="strip-note" id="dPerfKpiNote"></div>
 
     <div class="panel fn-panel" id="dFunnel" style="margin-top:16px"></div>
 
@@ -365,7 +341,7 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
   <section class="sec perf" id="secPerf">
     <div class="sec-tag">02 &middot; Performance</div>
     <div class="sec-title">Performance &mdash; traffic sau khi nh&#7853;n comms</div>
-    <p class="sec-sub">Ng&#432;&#7901;i thu&#7897;c CRM session (channelGrouping=Growth) l&#224;m g&#236; tr&#234;n app: <b>DAU</b>, <b>DAU w/ adview</b>, <b>DAU w/ save-ad</b>, <b>DAU w/ lead</b> &mdash; k&#232;m <b>conversion rate</b> c&#7911;a t&#7915;ng ch&#7881; s&#7889; (/ DAU). Distinct-user metrics (DAU, DAU w/ adview/lead/save-ad) = <b>trung b&#236;nh/ng&#224;y</b> trong kho&#7843;ng l&#7885;c (&Sigma; distinct &divide; s&#7889; ng&#224;y). L&#7885;c <b>Channel/Platform</b> = ph&#226;n lo&#7841;i campaign theo send-log (kh&#7899;p campaign_name): gi&#7919; campaign t&#7915;ng g&#7917;i qua channel/platform &#273;&#243; &mdash; metric v&#7851;n l&#224; t&#7893;ng c&#7911;a campaign.</p>
+    <p class="sec-sub">Ng&#432;&#7901;i thu&#7897;c CRM session (channelGrouping=Growth) l&#224;m g&#236; tr&#234;n app: <b>DAU</b>, <b>DAU w/ adview</b>, <b>DAU w/ save-ad</b>, <b>DAU w/ lead</b> &mdash; k&#232;m <b>conversion rate</b> c&#7911;a t&#7915;ng ch&#7881; s&#7889; (/ DAU). Distinct-user metrics = <b>trung b&#236;nh/ng&#224;y</b> trong kho&#7843;ng l&#7885;c (&Sigma; distinct &divide; s&#7889; ng&#224;y). L&#7885;c <b>Channel/Platform</b> = ph&#226;n lo&#7841;i campaign theo send-log (kh&#7899;p campaign_name): gi&#7919; campaign t&#7915;ng g&#7917;i qua channel/platform &#273;&#243; &mdash; metric v&#7851;n l&#224; t&#7893;ng c&#7911;a campaign. <b>Score card DAU &#273;&#227; chuy&#7875;n l&#234;n section 01</b> v&#224; ch&#7841;y theo b&#7897; l&#7885;c c&#7911;a section 01; b&#7897; l&#7885;c d&#432;&#7899;i &#273;&#226;y &#273;i&#7873;u khi&#7875;n bi&#7875;u &#273;&#7891; v&#224; b&#7843;ng c&#7911;a section n&#224;y.</p>
 
     <div class="controls">
       <div class="ctl"><span class="ctl-label">Range</span>
@@ -386,7 +362,6 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
       <div class="ctl"><span class="ctl-label">Side</span><div class="chips" id="pSideChips"></div></div>
     </div>
 
-    <section class="kpis k6" id="pKpis"></section>
 
     <div class="panel" style="margin-top:14px" id="fcPanel" hidden>
       <div class="p-head">
@@ -580,29 +555,10 @@ function kwMatch(name,set){const n=String(name||"").toLowerCase();
 
 /* ---------- horizontal-bar chart (metric by category) ----------
    rows:[{label,value,color,strong}]  opts:{pct} */
-function hBars(holder,rows,opts){
-  opts=opts||{};const isPct=!!opts.pct;
-  const vals=rows.map(r=>(r.value==null||!isFinite(r.value))?0:r.value);
-  const max=Math.max(...vals,isPct?0.0001:1);
-  holder.innerHTML="";
-  if(!rows.length){holder.appendChild(el("div","hb-empty","không có dữ liệu cho bộ lọc này"));return;}
-  const wrap=el("div","hb-wrap");
-  rows.forEach(r=>{
-    const v=(r.value==null||!isFinite(r.value))?null:r.value;
-    const w=v==null?0:Math.max(v>0?2:0,(v/max)*100);
-    const row=el("div","hb-row"+(r.strong?" strong":""));
-    row.innerHTML=`<div class="hb-label" title="${esc(r.label)}">${esc(r.label)}</div>`+
-      `<div class="hb-track"><div class="hb-bar" style="width:${w}%;background:${r.color||'var(--accent)'}"></div></div>`+
-      `<div class="hb-val">${v==null?'—':(isPct?pct(v):fmt(v))}</div>`;
-    wrap.appendChild(row);
-  });
-  holder.appendChild(wrap);
-}
-
 /* ================= SECTION 1 · DELIVERY ================= */
 const del={range:"7",cStart:DATES[Math.max(0,N-7)],cEnd:DATES[N-1],
   ch:new Set(),pf:new Set(),tt:new Set(),sides:new Set(),kw:new Set(),campSel:new Set(),
-  metrics:new Set(["sent"]),bk:"channel",bcMet:"sent",
+  metrics:new Set(["sent"]),bk:"channel",
   mvA:DATES[Math.max(0,N-2)],mvB:DATES[N-1],mvMet:"sent",mvShowAll:false};
 
 // content_card & inbox report total_reach as IMPRESSIONS (session-based, can exceed sent),
@@ -660,48 +616,6 @@ function renderDelKpis(){
     k.innerHTML=`<div class="k-name"><span>${cd.n}</span></div><div class="k-val">${cd.v}</div>${cd.rate?`<div class="k-rate">${cd.rate}</div>`:""}${cd.pill}<div class="k-foot">${cd.foot}</div>`;
     box.appendChild(k);});
 }
-// ---- metric-by-group horizontal bar charts (channel / platform / side / delivery type) ----
-// aggregate delivery components per category key over a window (respects current filters)
-function delBkAgg(keyFn,cs){
-  const m=new Map();
-  for(const r of DROWS){if(!cs.has(r[0])||!delRowOk(r))continue;const k=keyFn(r);
-    let a=m.get(k);if(!a){a={sent:0,sentReal:0,reach:0,impress:0,opens:0};m.set(k,a);}
-    a.sent+=r[5];a.opens+=r[7];
-    if(isImpress(r)){a.impress+=r[6];}else{a.reach+=r[6];a.sentReal+=r[5];}}
-  return m;
-}
-function delBkMetVal(a,met){
-  if(met==="sent")return a.sent;
-  if(met==="reach")return a.reach;
-  if(met==="impress")return a.impress;
-  if(met==="opens")return a.opens;
-  if(met==="deliv_rate")return a.sentReal?a.reach/a.sentReal:null;
-  const sh=a.reach+a.impress;return sh?a.opens/sh:null;   // open_rate
-}
-const DEL_BK_DIMS=[
-  {name:"Theo channel",keyFn:r=>r[1],labelOf:k=>DEL.channelLabels[k]},
-  {name:"Theo platform",keyFn:r=>r[2],labelOf:k=>DEL.platLabels[k]},
-  {name:"Theo side",keyFn:r=>CAMP_SIDES[r[4]],labelOf:k=>SIDE_LABEL[k]||k||"—",order:["demand","supply","other"]},
-  {name:"Theo delivery type",keyFn:r=>r[3],labelOf:k=>DEL.triggerLabels[k]}
-];
-function renderDelBkChart(){
-  const {cur}=winIdx(del),cs=new Set(cur);
-  const met=del.bcMet, mdef=DEL_MET[met], color=mdef.color, isPct=mdef.pct;
-  const allVal=delBkMetVal(delSum(cur),met);
-  const grid=$("#dBcGrid");grid.innerHTML="";
-  DEL_BK_DIMS.forEach(dim=>{
-    const agg=delBkAgg(dim.keyFn,cs);
-    let rows=[...agg.entries()].map(([k,a])=>({k,label:dim.labelOf(k),value:delBkMetVal(a,met),color}));
-    if(dim.order)rows.sort((x,y)=>dim.order.indexOf(x.k)-dim.order.indexOf(y.k));
-    else rows.sort((x,y)=>((y.value==null?-1:y.value)-(x.value==null?-1:x.value)));
-    rows.unshift({label:"All",value:allVal,color:"var(--ink-2)",strong:true});
-    const cell=el("div","bk-cell");
-    cell.appendChild(el("div","bk-cell-title",dim.name));
-    const holder=el("div");cell.appendChild(holder);
-    grid.appendChild(cell);
-    hBars(holder,rows,{pct:isPct});
-  });
-}
 // ---- on-app attribution for the funnel handoff ----
 // set of campaign_names that pass the current delivery filter within a window
 function delFilteredNames(cs){
@@ -711,10 +625,10 @@ function delFilteredNames(cs){
 }
 // sum on-app outcomes (user-days) for those campaign_names in a window
 function perfForNames(cs,nameSet){
-  let dau=0,dva=0,dlead=0;
+  let dau=0,dva=0,dlead=0,dsave=0;
   for(const r of PD){if(!cs.has(r[0]))continue;if(!nameSet.has(CAMPS[r[1]][0]))continue;
-    dau+=r[2];dva+=r[3];dlead+=r[8];}
-  return{dau,dva,dlead};
+    dau+=r[2];dva+=r[3];dlead+=r[8];dsave+=r[10];}
+  return{dau,dva,dlead,dsave};
 }
 // compact percentage-point delta chip for a rate step
 function ppMini(now,was,full){
@@ -908,7 +822,7 @@ $("#dMvMetSeg").addEventListener("click",e=>{const b=e.target.closest("button");
 $("#dMvJump").addEventListener("click",()=>{delBiggestJump();del.mvShowAll=false;renderDelMovers();});
 $("#dMvToggle").addEventListener("click",()=>{del.mvShowAll=!del.mvShowAll;renderDelMovers();});
 
-function renderDeliv(){renderDelKpis();renderDelBkChart();renderDelFunnel();renderDelTrend();renderDelBk();renderDelMovers();}
+function renderDeliv(){renderDelKpis();renderDelPerfKpis();renderDelFunnel();renderDelTrend();renderDelBk();renderDelMovers();}
 
 /* ---- delivery filter wiring ---- */
 function chipGroup(mount,labels,set,onChange){
@@ -944,9 +858,6 @@ const SIDE_CHIPS=[{v:"demand",label:"buyer",title:"campaign do team demand tạo
 chipGroupV($("#dSideChips"),SIDE_CHIPS,del.sides,()=>renderDeliv());
 chipGroupV($("#dKwChips"),KW_CHIPS,del.kw,()=>renderDeliv());
 $("#dKwChips").querySelectorAll("button.chip:not(.all)").forEach(b=>b.classList.add("kw"));
-$("#dBcMetSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-  [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");
-  del.bcMet=b.dataset.m;renderDelBkChart();});
 makeCampSelect({wrap:"#dCampMS",box:"#dCampBox",input:"#dCampInput",drop:"#dCampDrop",count:"#dCampCount",
   all:[...new Set(DEL.camps)].sort((a,b)=>a.localeCompare(b)), state:del.campSel, onChange:renderDeliv});
 $("#dRangeSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
@@ -997,11 +908,6 @@ function perfPerDay(){
   for(const r of PD){if(!perfCampOk(r[1]))continue;dau[r[0]]+=r[2];dva[r[0]]+=r[3];dsave[r[0]]+=r[10];dlead[r[0]]+=r[8];}
   return{dau,dva,dsave,dlead};
 }
-function perfSum(idxArr){
-  const set=new Set(idxArr);let dau=0,dva=0,dsave=0,dlead=0;
-  for(const r of PD){if(!set.has(r[0])||!perfCampOk(r[1]))continue;dau+=r[2];dva+=r[3];dsave+=r[10];dlead+=r[8];}
-  return{dau,dva,dsave,dlead};
-}
 const PERF_MET={
   dau:{color:"var(--sent)",name:"DAU",pct:false},
   dva:{color:"var(--teal)",name:"DAU w/ adview",pct:false},
@@ -1011,12 +917,14 @@ const PERF_MET={
   cr_save:{color:"var(--orate)",name:"CR save",pct:true,num:"dsave"},
   cr_lead:{color:"var(--terra)",name:"CR lead",pct:true,num:"dlead"}
 };
-function renderPerfKpis(){
-  const {cur,prev}=winIdx(perf),full=prev.length===cur.length&&prev.length>0;
+// On-app KPI strip. Lives in section 01 and follows the DELIVERY filter bar: the campaign
+// cohort is whatever passes section 01's filters, attributed by campaign_name.
+function renderDelPerfKpis(){
+  const {cur,prev}=winIdx(del),full=prev.length===cur.length&&prev.length>0;
   const nd=cur.length||1;   // distinct-user metrics shown as avg/day over the selected range
-  const c=perfSum(cur),p=perfSum(prev);
+  const names=delFilteredNames(new Set(cur)),prevNames=delFilteredNames(new Set(prev));
+  const c=perfForNames(new Set(cur),names),p=perfForNames(new Set(prev),prevNames);
   const crA=c.dau?c.dva/c.dau:null,crAp=p.dau?p.dva/p.dau:null;
-  const crS=c.dau?c.dsave/c.dau:null,crSp=p.dau?p.dsave/p.dau:null;
   const crL=c.dau?c.dlead/c.dau:null,crLp=p.dau?p.dlead/p.dau:null;
   const cards=[
     {cls:"c-dau",n:"DAU",v:compact(c.dau/nd),rate:"trung bình user/ngày",pill:dpill(c.dau,p.dau,full)},
@@ -1026,10 +934,11 @@ function renderPerfKpis(){
     {cls:"c-cra",n:"CR DAU w/ adview",v:pct(crA),rate:"DAU w/ adview / DAU",pill:dpillPct(crA,crAp,full)},
     {cls:"c-crl",n:"CR DAU w/ lead",v:pct(crL),rate:"DAU w/ lead / DAU",pill:dpillPct(crL,crLp,full)}
   ];
-  const box=$("#pKpis");box.innerHTML="";
+  const box=$("#dPerfKpis");box.innerHTML="";
   cards.forEach(cd=>{const k=el("div","kpi "+cd.cls);
     k.innerHTML=`<div class="k-name"><span>${cd.n}</span></div><div class="k-val">${cd.v}</div><div class="k-rate">${cd.rate}</div>${cd.pill}<div class="k-foot">${daysLabel(cur)}</div>`;
     box.appendChild(k);});
+  $("#dPerfKpiNote").innerHTML=`On-app sau khi nh&#7853;n comms &middot; <b>${names.size}</b> campaign kh&#7899;p b&#7897; l&#7885;c tr&#234;n &middot; distinct-user = trung b&#236;nh/ng&#224;y. Ngu&#7891;n &#273;o kh&#225;c v&#7899;i sent/open n&#234;n <b>kh&#244;ng</b> t&#237;nh t&#7927; l&#7879; open&rarr;DAU.`;
 }
 /* ---------- Forecast Q4 (optional, manually-maintained snapshot — see build.py) ---------- */
 // Cards follow the Performance section chips above (Vertical/Side narrow WHICH category shows;
@@ -1315,7 +1224,7 @@ function renderPerfTbl(){
 }
 const VERT_ITEMS=[{v:"gds",label:"gds"},{v:"veh",label:"veh"},{v:"pty",label:"pty"},{v:"jobs",label:"jobs"},{v:"other",label:"other"}];
 // section-top filters drive KPIs + Trend + the Forecast cards; the table has its own filters (renderPerfTbl)
-function renderPerfTop(){renderPerfKpis();renderPerfTrend();renderForecast();}
+function renderPerfTop(){renderPerfTrend();renderForecast();}
 function renderPerf(){renderPerfTop();renderPerfTbl();}
 
 /* ---- perf SECTION filter wiring (KPIs + trend) ---- */
@@ -1401,5 +1310,6 @@ let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>
 })();
 </script>
 
+<script src="../edit-layer.js"></script>
 </body>
 </html>
