@@ -6,7 +6,9 @@
 
    Nội dung hiển thị xếp 3 lớp, giống cơ chế Message T10 bên tab Reward:
      bản gốc trong HTML  <  bản đã đăng trong overrides.json  <  bản nháp local
-   Bấm "Đăng cho cả team" là commit <thư-mục>/overrides.json qua GitHub API.
+   Cả 3 tab dùng CHUNG một file overrides.json ở gốc repo và chung một bản
+   nháp, nên sửa ở tab nào cũng được rồi bấm "Đăng cho cả team" một lần là
+   đăng hết. Khoá của mỗi phần tử có tiền tố thư mục để 3 tab không đụng nhau.
    Token do người dùng tự dán, chỉ nằm trong localStorage của máy họ —
    không bao giờ nằm trong file này hay trong repo.
 =========================================================================== */
@@ -16,8 +18,9 @@
   const REPO='duyennguyen-CT/ct_internal_comms';
   const TKEY='rwgh_tok';
   const DIR=(location.pathname.replace(/\/[^/]*$/,'').split('/').filter(Boolean).pop())||'root';
-  const FILE=DIR+'/overrides.json';
-  const KEY='ed_'+DIR, MKEY='ed_'+DIR+'_pub';
+  const FILE='overrides.json';
+  const KEY='ed_all', MKEY='ed_all_pub';
+  const mine=k=>k.slice(0,DIR.length+1)===DIR+'|';   // khoá thuộc tab đang mở
 
   /* Các class chữ giải thích có trong 3 file. Mọi thứ ngoài danh sách này
      không bao giờ sửa được — cố ý, để không ai sửa nhầm vào số liệu. */
@@ -36,7 +39,7 @@
      ghép đường dẫn tag.class[thứ-tự]. Khoá phải ổn định qua các lần render lại,
      nếu đổi cách đặt khoá là mọi bản đã đăng và bản nháp mất liên kết. */
   function keyOf(el){
-    if(el.id)return'#'+el.id;
+    if(el.id)return DIR+'|#'+el.id;
     const parts=[];let n=el;
     while(n&&n!==document.body){
       if(n.id){parts.unshift('#'+n.id);break}
@@ -47,7 +50,7 @@
       parts.unshift(tag+(cls?'.'+cls:'')+'['+sib.indexOf(n)+']');
       n=p;
     }
-    return parts.join('>');
+    return DIR+'|'+parts.join('>');
   }
 
   function targets(){
@@ -135,9 +138,10 @@
     save();
   }
 
+  /* Chỉ hoàn tác phần sửa của tab đang mở, không đụng bản nháp của 2 tab kia */
   function undoAll(){
-    if(!Object.keys(store).length)return;
-    store={};
+    if(!Object.keys(store).some(mine))return;
+    Object.keys(store).forEach(k=>{if(mine(k))delete store[k]});
     targets().forEach(el=>{
       delete el.dataset.edLocked;
       el.classList.remove('ed-gone');el.hidden=false;
@@ -146,19 +150,33 @@
       else if(o)el.textContent=o.t;
       else if(el.dataset.edOrigHtml!==undefined)el.innerHTML=el.dataset.edOrigHtml;
     });
-    save();status('Đã bỏ hết phần sửa chưa đăng');
+    save();status('Đã bỏ phần sửa chưa đăng của tab này');
   }
 
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}status()}
+  /* 3 tab chạy trong 3 iframe riêng nhưng dùng chung một bản nháp, nên mỗi lần
+     ghi phải trộn với bản trên đĩa: phần của tab này lấy từ bộ nhớ, phần của
+     2 tab kia lấy nguyên từ đĩa. Ghi đè thẳng sẽ xoá mất bản nháp tab khác. */
+  function save(){
+    let disk={};
+    try{disk=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+    const out={};
+    Object.keys(disk).forEach(k=>{if(!mine(k))out[k]=disk[k]});
+    Object.keys(store).forEach(k=>{if(mine(k))out[k]=store[k]});
+    store=out;
+    try{localStorage.setItem(KEY,JSON.stringify(out))}catch(e){}
+    status();
+  }
 
   function status(msg){
-    const n=Object.keys(store).length;
+    const ks=Object.keys(store), n=ks.length, m=ks.filter(mine).length;
     const p=document.getElementById('edPub');if(p)p.disabled=!n;
+    const u=document.getElementById('edUndo');if(u)u.disabled=!m;
     const s=document.getElementById('edStat');if(!s)return;
     if(msg){s.textContent=msg;return}
     const when=pubMeta.updated?new Date(pubMeta.updated).toLocaleString('vi-VN',
       {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):null;
-    s.textContent=n?`${n} chỗ sửa chưa đăng`
+    // Đăng là đăng cả 3 tab, nên đếm tổng rồi nói rõ bao nhiêu nằm ở tab khác
+    s.textContent=n?`${n} chỗ sửa chưa đăng`+(n>m?` (${n-m} ở tab khác)`:'')
       :(editing?'Bấm vào chữ để sửa · xoá hết chữ là ẩn dòng đó'
         :(when?'Bản chung cập nhật '+when:'Chưa có bản đăng chung'));
   }
@@ -167,7 +185,7 @@
   function readMirror(){try{return JSON.parse(localStorage.getItem(MKEY)||'null')}catch(e){return null}}
   async function loadPub(){
     let remote=null;
-    try{const r=await fetch('overrides.json?t='+Date.now(),{cache:'no-store'});
+    try{const r=await fetch('../overrides.json?t='+Date.now(),{cache:'no-store'});
       if(r.ok)remote=await r.json()}catch(e){}
     const mine=readMirror();
     // Pages mất ~1 phút để build, nên nếu bản mình vừa đăng mới hơn thì ưu tiên nó
@@ -200,7 +218,7 @@
       const sha=g.ok?(await g.json()).sha:undefined;
       const p=await fetch(url,{method:'PUT',
         headers:Object.assign({'Content-Type':'application/json'},H),
-        body:JSON.stringify({message:DIR+': cập nhật chữ giải thích',branch:'main',
+        body:JSON.stringify({message:'Dashboard: cập nhật chữ giải thích (sửa ở tab '+DIR+')',branch:'main',
           content:b64(JSON.stringify(body,null,2)+'\n'),sha})});
       if(p.status===401||p.status===403)throw new Error('auth');
       if(p.status===409||p.status===422)throw new Error('conflict');
@@ -254,8 +272,8 @@ html.ed-on .ed-gone{outline-style:dotted;opacity:.45;font-style:italic;cursor:po
     const bar=document.createElement('div');bar.id='edBar';
     bar.innerHTML='<button type="button" id="edToggle" aria-pressed="false">✏️ Sửa chữ</button>'
       +'<span id="edStat"></span>'
-      +'<button type="button" id="edUndo">Hoàn tác</button>'
-      +'<button type="button" id="edPub" disabled>Đăng cho cả team</button>'
+      +'<button type="button" id="edUndo" disabled title="Bỏ phần sửa chưa đăng của tab này">Hoàn tác</button>'
+      +'<button type="button" id="edPub" disabled title="Đăng phần sửa của cả 3 tab trong một lần">Đăng cho cả team</button>'
       +'<button type="button" id="edTokBtn" aria-expanded="false" title="Token GitHub">🔑</button>'
       +'<div id="edTok"><input id="edTokIn" type="password" autocomplete="off" '
       +'placeholder="Dán fine-grained token (Contents: Read and write)">'
@@ -284,6 +302,19 @@ html.ed-on .ed-gone{outline-style:dotted;opacity:.45;font-style:italic;cursor:po
     document.addEventListener('keydown',e=>{
       if(editing&&e.key==='Enter'&&e.target.dataset&&e.target.dataset.edKey){e.preventDefault();e.target.blur()}
     },true);
+
+    /* Tab khác vừa sửa hoặc vừa đăng → đồng bộ lại số đếm và nội dung */
+    window.addEventListener('storage',e=>{
+      if(e.key===KEY){
+        try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(err){store={}}
+        reapply();status();
+      }else if(e.key===MKEY){
+        const m=readMirror();
+        if(m&&m.items){pub=m.items;pubMeta={updated:m.updated||null}}
+        try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(err){store={}}
+        reapply();status();
+      }
+    });
 
     obs=new MutationObserver(()=>{if(!applying)clearTimeout(obs._t),obs._t=setTimeout(reapply,60)});
     reapply();
