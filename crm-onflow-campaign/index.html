@@ -249,7 +249,7 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
   <section class="sec deliv" id="secDeliv">
     <div class="sec-tag">01 &middot; Delivery</div>
     <div class="sec-title">Delivery &mdash; ph&#7877;u chuy&#7875;n &#273;&#7893;i</div>
-    <p class="sec-sub">Xem <b>s&#7913;c kh&#7887;e chuy&#7875;n &#273;&#7893;i</b> gi&#7919;a c&#225;c b&#432;&#7899;c &#273;&#7875; bi&#7871;t <b>b&#432;&#7899;c n&#224;o c&#7847;n c&#7843;i thi&#7879;n</b>, kh&#244;ng ch&#7881; nh&#236;n volume. Ph&#7877;u: <b>Sent</b> &rarr; <b>Reach</b> (delivered: push, pop-up/in-app) / <b>Impress</b> (shown: inbox, content card) &rarr; <b>Direct open</b>, r&#7891;i b&#224;n giao sang <b>on-app</b> (DAU &rarr; xem tin &rarr; lead). Reach/Impress &amp; DAU l&#224; 2 h&#7879; &#273;o kh&#225;c nhau n&#234;n <b>kh&#244;ng</b> n&#7889;i t&#7927; l&#7879; open&rarr;DAU. Ch&#7881; campaign Ch&#7907; T&#7889;t; l&#7885;c theo ng&#224;y, channel, platform, side, delivery type, campaign.</p>
+    <p class="sec-sub">Xem <b>s&#7913;c kh&#7887;e chuy&#7875;n &#273;&#7893;i</b> gi&#7919;a c&#225;c b&#432;&#7899;c &#273;&#7875; bi&#7871;t <b>b&#432;&#7899;c n&#224;o c&#7847;n c&#7843;i thi&#7879;n</b>, kh&#244;ng ch&#7881; nh&#236;n volume. Ph&#7877;u: <b>Sent</b> &rarr; <b>Reach</b> (delivered: push, pop-up/in-app) / <b>Impress</b> (shown: inbox, content card) &rarr; <b>Direct open</b>, r&#7891;i b&#224;n giao sang <b>on-app</b> (DAU &rarr; xem tin &rarr; lead). Reach/Impress &amp; DAU l&#224; 2 h&#7879; &#273;o kh&#225;c nhau n&#234;n <b>kh&#244;ng</b> n&#7889;i t&#7927; l&#7879; open&rarr;DAU. Ch&#7881; campaign Ch&#7907; T&#7889;t; m&#7897;t b&#7897; l&#7885;c chung (ng&#224;y, channel, platform, vertical, side, delivery type, campaign) &#225;p d&#7909;ng cho to&#224;n trang.</p>
 
     <div class="controls">
       <div class="ctl"><span class="ctl-label">Range</span>
@@ -268,6 +268,7 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
       <div class="ctl"><span class="ctl-label">Platform</span><div class="chips" id="dPlatChips"></div></div>
     </div>
     <div class="controls">
+      <div class="ctl"><span class="ctl-label">Vertical</span><div class="chips" id="dVertChips"></div></div>
       <div class="ctl"><span class="ctl-label">Side</span><div class="chips" id="dSideChips"></div></div>
       <div class="ctl"><span class="ctl-label">Delivery type</span><div class="chips" id="dTrigChips"></div></div>
       <div class="ctl"><span class="ctl-label">Campaign</span>
@@ -341,27 +342,7 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
   <section class="sec perf" id="secPerf">
     <div class="sec-tag">02 &middot; Performance</div>
     <div class="sec-title">Performance &mdash; traffic sau khi nh&#7853;n comms</div>
-    <p class="sec-sub">Ng&#432;&#7901;i thu&#7897;c CRM session (channelGrouping=Growth) l&#224;m g&#236; tr&#234;n app: <b>DAU</b>, <b>DAU w/ adview</b>, <b>DAU w/ save-ad</b>, <b>DAU w/ lead</b> &mdash; k&#232;m <b>conversion rate</b> c&#7911;a t&#7915;ng ch&#7881; s&#7889; (/ DAU). Distinct-user metrics = <b>trung b&#236;nh/ng&#224;y</b> trong kho&#7843;ng l&#7885;c (&Sigma; distinct &divide; s&#7889; ng&#224;y). L&#7885;c <b>Channel/Platform</b> = ph&#226;n lo&#7841;i campaign theo send-log (kh&#7899;p campaign_name): gi&#7919; campaign t&#7915;ng g&#7917;i qua channel/platform &#273;&#243; &mdash; metric v&#7851;n l&#224; t&#7893;ng c&#7911;a campaign. <b>Score card DAU &#273;&#227; chuy&#7875;n l&#234;n section 01</b> v&#224; ch&#7841;y theo b&#7897; l&#7885;c c&#7911;a section 01; b&#7897; l&#7885;c d&#432;&#7899;i &#273;&#226;y &#273;i&#7873;u khi&#7875;n bi&#7875;u &#273;&#7891; v&#224; b&#7843;ng c&#7911;a section n&#224;y.</p>
-
-    <div class="controls">
-      <div class="ctl"><span class="ctl-label">Range</span>
-        <div class="seg" id="pRangeSeg">
-          <button data-r="3" type="button">3d</button><button data-r="5" type="button">5d</button>
-          <button data-r="7" type="button" aria-pressed="true">7d</button><button data-r="14" type="button">14d</button>
-          <button data-r="30" type="button">30d</button><button data-r="90" type="button">90d</button><button data-r="custom" type="button">Custom</button>
-        </div>
-      </div>
-      <div class="custom-range" id="pCustomRange"><input type="date" class="dt" id="pcStart"><span style="color:var(--muted)">&rarr;</span><input type="date" class="dt" id="pcEnd"></div>
-    </div>
-    <div class="controls">
-      <div class="ctl"><span class="ctl-label">Channel</span><div class="chips" id="pChanChips"></div></div>
-      <div class="ctl"><span class="ctl-label">Platform</span><div class="chips" id="pPlatChips"></div></div>
-    </div>
-    <div class="controls">
-      <div class="ctl"><span class="ctl-label">Vertical</span><div class="chips" id="pVertChips"></div></div>
-      <div class="ctl"><span class="ctl-label">Side</span><div class="chips" id="pSideChips"></div></div>
-    </div>
-
+    <p class="sec-sub">Ng&#432;&#7901;i thu&#7897;c CRM session (channelGrouping=Growth) l&#224;m g&#236; tr&#234;n app: <b>DAU</b>, <b>DAU w/ adview</b>, <b>DAU w/ save-ad</b>, <b>DAU w/ lead</b> &mdash; k&#232;m <b>conversion rate</b> c&#7911;a t&#7915;ng ch&#7881; s&#7889; (/ DAU). Distinct-user metrics = <b>trung b&#236;nh/ng&#224;y</b> trong kho&#7843;ng l&#7885;c (&Sigma; distinct &divide; s&#7889; ng&#224;y). L&#7885;c <b>Channel/Platform</b> = ph&#226;n lo&#7841;i campaign theo send-log (kh&#7899;p campaign_name): gi&#7919; campaign t&#7915;ng g&#7917;i qua channel/platform &#273;&#243; &mdash; metric v&#7851;n l&#224; t&#7893;ng c&#7911;a campaign. <b>Score card DAU &#273;&#227; chuy&#7875;n l&#234;n section 01</b>. To&#224;n trang d&#249;ng chung <b>m&#7897;t b&#7897; l&#7885;c duy nh&#7845;t &#7903; section 01</b> &mdash; &#273;&#7893;i filter tr&#234;n &#273;&#243; l&#224; m&#7885;i bi&#7875;u &#273;&#7891; v&#224; b&#7843;ng b&#234;n d&#432;&#7899;i &#273;&#7873;u &#273;&#7893;i theo.</p>
 
     <div class="panel" style="margin-top:14px" id="fcPanel" hidden>
       <div class="p-head">
@@ -393,29 +374,8 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
     </div>
 
     <div class="panel" style="margin-top:16px">
-      <div class="p-head"><div><div class="p-title">Theo campaign</div><div class="p-desc">DAU/adview/lead/save-ad = <b>trung b&#236;nh/ng&#224;y</b> (&Sigma; distinct &divide; s&#7889; ng&#224;y); <b>Leads</b> = t&#7893;ng (c&#7897;ng d&#7891;n) &middot; CR = distinct-w-X / DAU. Click header &#273;&#7875; s&#7855;p x&#7871;p. <b>B&#7897; l&#7885;c ri&#234;ng cho b&#7843;ng n&#224;y</b> (KPIs &amp; bi&#7875;u &#273;&#7891; &#7903; tr&#234;n d&#249;ng b&#7897; l&#7885;c section).</div></div>
+      <div class="p-head"><div><div class="p-title">Theo campaign</div><div class="p-desc">DAU/adview/lead/save-ad = <b>trung b&#236;nh/ng&#224;y</b> (&Sigma; distinct &divide; s&#7889; ng&#224;y); <b>Leads</b> = t&#7893;ng (c&#7897;ng d&#7891;n) &middot; CR = distinct-w-X / DAU. Click header &#273;&#7875; s&#7855;p x&#7871;p. B&#7843;ng n&#224;y ch&#7841;y theo <b>b&#7897; l&#7885;c chung &#7903; section 01</b>.</div></div>
         <div class="range-note" id="pTblNote"></div>
-      </div>
-      <div class="tf">
-        <div class="ctl"><span class="ctl-label">Range</span>
-          <div class="seg" id="ptRangeSeg">
-            <button data-r="3" type="button">3d</button><button data-r="5" type="button">5d</button>
-            <button data-r="7" type="button" aria-pressed="true">7d</button><button data-r="14" type="button">14d</button>
-            <button data-r="30" type="button">30d</button><button data-r="90" type="button">90d</button><button data-r="custom" type="button">Custom</button>
-          </div>
-          <div class="custom-range" id="ptCustomRange"><input type="date" class="dt" id="ptcStart"><span style="color:var(--muted)">&rarr;</span><input type="date" class="dt" id="ptcEnd"></div>
-        </div>
-        <div class="ctl"><span class="ctl-label">Channel</span><div class="chips" id="ptChanChips"></div></div>
-        <div class="ctl"><span class="ctl-label">Platform</span><div class="chips" id="ptPlatChips"></div></div>
-        <div class="ctl"><span class="ctl-label">Vertical</span><div class="chips" id="ptVertChips"></div></div>
-        <div class="ctl"><span class="ctl-label">Side</span><div class="chips" id="ptSideChips"></div></div>
-        <div class="ctl"><span class="ctl-label">Quick</span><div class="chips" id="ptKwChips"></div></div>
-        <div class="ctl"><span class="ctl-label">Campaign</span>
-          <div class="ms" id="pCampMS">
-            <div class="ms-box" id="pCampBox"><input type="text" class="ms-input" id="pCampInput" placeholder="t&#236;m &amp; ch&#7885;n campaign&hellip;" autocomplete="off"><span class="ms-count" id="pCampCount" hidden></span></div>
-            <div class="ms-drop" id="pCampDrop"></div>
-          </div>
-        </div>
       </div>
       <div class="tbl-wrap" style="margin-top:4px;box-shadow:none"><table id="pTbl"><thead></thead><tbody></tbody></table></div>
     </div>
@@ -556,8 +516,14 @@ function kwMatch(name,set){const n=String(name||"").toLowerCase();
 /* ---------- horizontal-bar chart (metric by category) ----------
    rows:[{label,value,color,strong}]  opts:{pct} */
 /* ================= SECTION 1 · DELIVERY ================= */
+/* MỘT bộ lọc duy nhất cho cả trang: thanh lọc ở section 01 điều khiển toàn bộ
+   KPI, phễu, biểu đồ, breakdown của section 01 lẫn biểu đồ và bảng "Theo
+   campaign" của section 02. Trước đây có 3 bộ lọc riêng (del / perf / ptbl),
+   nên 3 vùng số trên cùng một trang có thể đang nói về 3 tập campaign khác
+   nhau. Các `seg` chọn metric / cột sort vẫn là state riêng của từng panel —
+   đó là cách xem, không phải bộ lọc. */
 const del={range:"7",cStart:DATES[Math.max(0,N-7)],cEnd:DATES[N-1],
-  ch:new Set(),pf:new Set(),tt:new Set(),sides:new Set(),kw:new Set(),campSel:new Set(),
+  ch:new Set(),pf:new Set(),tt:new Set(),verts:new Set(),sides:new Set(),kw:new Set(),campSel:new Set(),
   metrics:new Set(["sent"]),bk:"channel",
   mvA:DATES[Math.max(0,N-2)],mvB:DATES[N-1],mvMet:"sent",mvShowAll:false};
 
@@ -568,11 +534,20 @@ const SIDE_LABEL={demand:"buyer",supply:"seller",other:"other"};
 const IMPRESS_SET=new Set();DEL.channels.forEach((c,i)=>{if(c==="content_card"||c==="inbox")IMPRESS_SET.add(i);});
 const isImpress=r=>IMPRESS_SET.has(r[1]);
 
+// Vertical là thuộc tính của campaign, không có trong bảng delivery. Map theo
+// campaign_name để chip Vertical ở thanh lọc chung áp được cả cho dòng delivery.
+// Một tên có thể ứng với nhiều campaign nên giữ Set và khớp theo giao nhau.
+const NAME_VERT=new Map();
+for(const c of CAMPS){let s=NAME_VERT.get(c[0]);if(!s){s=new Set();NAME_VERT.set(c[0],s);}s.add(c[1]);}
+const vertOkName=nm=>{if(!del.verts.size)return true;
+  const s=NAME_VERT.get(nm);return !!s&&[...del.verts].some(v=>s.has(v));};
+
 function delRowOk(r){
   if(del.ch.size&&!del.ch.has(r[1]))return false;
   if(del.pf.size&&!del.pf.has(r[2]))return false;
   if(del.tt.size&&!del.tt.has(r[3]))return false;
   if(del.sides.size&&!del.sides.has(CAMP_SIDES[r[4]]))return false;
+  if(!vertOkName(DEL.camps[r[4]]))return false;
   if(del.kw.size&&!kwMatch(DEL.camps[r[4]],del.kw))return false;
   if(del.campSel.size&&!del.campSel.has(DEL.camps[r[4]]))return false;
   return true;
@@ -837,9 +812,9 @@ function chipGroup(mount,labels,set,onChange){
   function syncChips(){allBtn.setAttribute("aria-pressed",set.size===0?"true":"false");
     [...mount.querySelectorAll("button.chip:not(.all)")].forEach(b=>b.setAttribute("aria-pressed",set.has(+b.dataset.i)?"true":"false"));}
 }
-chipGroup($("#dChanChips"),DEL.channelLabels,del.ch,()=>renderDeliv());
-chipGroup($("#dPlatChips"),DEL.platLabels,del.pf,()=>renderDeliv());
-chipGroup($("#dTrigChips"),DEL.triggerLabels,del.tt,()=>renderDeliv());
+chipGroup($("#dChanChips"),DEL.channelLabels,del.ch,()=>drawAll());
+chipGroup($("#dPlatChips"),DEL.platLabels,del.pf,()=>drawAll());
+chipGroup($("#dTrigChips"),DEL.triggerLabels,del.tt,()=>drawAll());
 // value-based chip group (Set holds string values, not indices) — matches the chip look of channel/platform
 function chipGroupV(mount,items,set,onChange){
   mount.innerHTML="";
@@ -852,17 +827,19 @@ function chipGroupV(mount,items,set,onChange){
   function sync(){allBtn.setAttribute("aria-pressed",set.size===0?"true":"false");
     [...mount.querySelectorAll("button.chip:not(.all)")].forEach(b=>b.setAttribute("aria-pressed",set.has(b.dataset.v)?"true":"false"));}
 }
+const VERT_ITEMS=[{v:"gds",label:"gds"},{v:"veh",label:"veh"},{v:"pty",label:"pty"},{v:"jobs",label:"jobs"},{v:"other",label:"other"}];
 const SIDE_CHIPS=[{v:"demand",label:"buyer",title:"campaign do team demand tạo — re-engage người mua"},
   {v:"supply",label:"seller",title:"campaign do team supply tạo — người bán"},
   {v:"other",label:"other",title:"product + khác"}];
-chipGroupV($("#dSideChips"),SIDE_CHIPS,del.sides,()=>renderDeliv());
-chipGroupV($("#dKwChips"),KW_CHIPS,del.kw,()=>renderDeliv());
+chipGroupV($("#dVertChips"),VERT_ITEMS,del.verts,()=>drawAll());
+chipGroupV($("#dSideChips"),SIDE_CHIPS,del.sides,()=>drawAll());
+chipGroupV($("#dKwChips"),KW_CHIPS,del.kw,()=>drawAll());
 $("#dKwChips").querySelectorAll("button.chip:not(.all)").forEach(b=>b.classList.add("kw"));
 makeCampSelect({wrap:"#dCampMS",box:"#dCampBox",input:"#dCampInput",drop:"#dCampDrop",count:"#dCampCount",
-  all:[...new Set(DEL.camps)].sort((a,b)=>a.localeCompare(b)), state:del.campSel, onChange:renderDeliv});
+  all:[...new Set(DEL.camps)].sort((a,b)=>a.localeCompare(b)), state:del.campSel, onChange:drawAll});
 $("#dRangeSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");
-  del.range=b.dataset.r;$("#dCustomRange").classList.toggle("on",del.range==="custom");renderDeliv();});
+  del.range=b.dataset.r;$("#dCustomRange").classList.toggle("on",del.range==="custom");drawAll();});
 $("#dMetSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   const m=b.dataset.m,on=b.getAttribute("aria-pressed")==="true";
   if(on){if(del.metrics.size<=1)return;del.metrics.delete(m);b.setAttribute("aria-pressed","false");}
@@ -871,41 +848,40 @@ $("#dMetSeg").addEventListener("click",e=>{const b=e.target.closest("button");if
 $("#dBkSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");del.bk=b.dataset.b;renderDelBk();});
 $("#dcStart").value=del.cStart;$("#dcEnd").value=del.cEnd;
-$("#dcStart").addEventListener("change",e=>{del.cStart=e.target.value;if(del.range==="custom")renderDeliv();});
-$("#dcEnd").addEventListener("change",e=>{del.cEnd=e.target.value;if(del.range==="custom")renderDeliv();});
+$("#dcStart").addEventListener("change",e=>{del.cStart=e.target.value;if(del.range==="custom")drawAll();});
+$("#dcEnd").addEventListener("change",e=>{del.cEnd=e.target.value;if(del.range==="custom")drawAll();});
 
 /* ================= SECTION 2 · PERFORMANCE ================= */
-// Section-level filters drive the KPIs + Trend chart.
-const perf={range:"7",cStart:DATES[Math.max(0,N-7)],cEnd:DATES[N-1],verts:new Set(),sides:new Set(),chs:new Set(),pfs:new Set(),metrics:new Set(["dau"]),sort:"dau",dir:-1};
-// Table-local filters (independent) drive ONLY the "Theo campaign" table.
-const ptbl={range:"7",cStart:DATES[Math.max(0,N-7)],cEnd:DATES[N-1],verts:new Set(),sides:new Set(),chs:new Set(),pfs:new Set(),kw:new Set(),campSel:new Set()};
-// campaign_name -> set of delivery channel / platform indices it was sent on (send-log footprint,
-// window-independent). Lets the Performance section filter by channel/platform via campaign_name.
-const NAME_CH=new Map(), NAME_PF=new Map();
+// Chỉ còn state cách xem: metric nào vẽ lên biểu đồ, bảng đang sort cột nào.
+// Mọi chiều lọc đều lấy từ `del` — xem ghi chú ở phần khai báo `del`.
+const perf={metrics:new Set(["dau"]),sort:"dau",dir:-1};
+// campaign_name -> tập channel / platform / delivery type mà nó từng được gửi
+// (dấu chân trong send-log, không phụ thuộc cửa sổ thời gian). Nhờ map này mà
+// các chip vốn thuộc về dòng delivery vẫn lọc được dữ liệu on-app theo campaign_name.
+const NAME_CH=new Map(), NAME_PF=new Map(), NAME_TG=new Map();
 for(const r of DROWS){const nm=DEL.camps[r[4]];
   let sc=NAME_CH.get(nm);if(!sc){sc=new Set();NAME_CH.set(nm,sc);}sc.add(r[1]);
-  let sp=NAME_PF.get(nm);if(!sp){sp=new Set();NAME_PF.set(nm,sp);}sp.add(r[2]);}
+  let sp=NAME_PF.get(nm);if(!sp){sp=new Set();NAME_PF.set(nm,sp);}sp.add(r[2]);
+  let sg=NAME_TG.get(nm);if(!sg){sg=new Set();NAME_TG.set(nm,sg);}sg.add(r[3]);}
+const footOk=(map,sel,nm)=>{if(!sel.size)return true;
+  const s=map.get(nm);return !!s&&[...sel].some(x=>s.has(x));};
 function campChPfOk(c,chs,pfs){
-  if(chs.size){const s=NAME_CH.get(c[0]);if(!s||![...chs].some(x=>s.has(x)))return false;}
-  if(pfs.size){const s=NAME_PF.get(c[0]);if(!s||![...pfs].some(x=>s.has(x)))return false;}
-  return true;}
-// KPIs + Trend use the section filters (no campaign multi-select — that lives on the table).
-function perfCampOk(ci){const c=CAMPS[ci];
-  if(perf.verts.size&&!perf.verts.has(c[1]))return false;
-  if(perf.sides.size&&!perf.sides.has(c[2]))return false;
-  if(!campChPfOk(c,perf.chs,perf.pfs))return false;
-  return true;}
-// The table uses its own independent filter set.
-function ptblCampOk(ci){const c=CAMPS[ci];
-  if(ptbl.verts.size&&!ptbl.verts.has(c[1]))return false;
-  if(ptbl.sides.size&&!ptbl.sides.has(c[2]))return false;
-  if(!campChPfOk(c,ptbl.chs,ptbl.pfs))return false;
-  if(ptbl.kw.size&&!kwMatch(c[0],ptbl.kw))return false;
-  if(ptbl.campSel.size&&!ptbl.campSel.has(c[0]))return false;
+  return footOk(NAME_CH,chs,c[0])&&footOk(NAME_PF,pfs,c[0]);}
+/* Một campaign có lọt bộ lọc chung hay không — dùng chung cho KPI on-app,
+   biểu đồ theo ngày và bảng "Theo campaign", nên cả 3 luôn nói về cùng một
+   tập campaign. */
+function campOk(ci){const c=CAMPS[ci];
+  if(del.verts.size&&!del.verts.has(c[1]))return false;
+  if(del.sides.size&&!del.sides.has(c[2]))return false;
+  if(!footOk(NAME_CH,del.ch,c[0]))return false;
+  if(!footOk(NAME_PF,del.pf,c[0]))return false;
+  if(!footOk(NAME_TG,del.tt,c[0]))return false;
+  if(del.kw.size&&!kwMatch(c[0],del.kw))return false;
+  if(del.campSel.size&&!del.campSel.has(c[0]))return false;
   return true;}
 function perfPerDay(){
   const dau=new Array(N).fill(0),dva=new Array(N).fill(0),dsave=new Array(N).fill(0),dlead=new Array(N).fill(0);
-  for(const r of PD){if(!perfCampOk(r[1]))continue;dau[r[0]]+=r[2];dva[r[0]]+=r[3];dsave[r[0]]+=r[10];dlead[r[0]]+=r[8];}
+  for(const r of PD){if(!campOk(r[1]))continue;dau[r[0]]+=r[2];dva[r[0]]+=r[3];dsave[r[0]]+=r[10];dlead[r[0]]+=r[8];}
   return{dau,dva,dsave,dlead};
 }
 const PERF_MET={
@@ -975,7 +951,7 @@ function fcTargetIdx(year,monthNum){
 }
 // actual for ONE forecast category (vertical key, or buyer/rest/total) in ONE calendar month,
 // computed from the same Performance payload already on the page, respecting Channel/Platform
-// chips (perf.chs/pfs). Returns null when the payload has no day in that month at all.
+// chips (del.ch/pf). Returns null when the payload has no day in that month at all.
 function fcActualFor(year,monthNum,catKey){
   const mk=`${year}-${String(monthNum).padStart(2,"0")}-`;
   const idxSet=new Set();DATES.forEach((d,i)=>{if(d.startsWith(mk))idxSet.add(i);});
@@ -986,7 +962,7 @@ function fcActualFor(year,monthNum,catKey){
   for(const r of PD){
     if(!idxSet.has(r[0]))continue;
     const c=CAMPS[r[1]];
-    if(!campChPfOk(c,perf.chs,perf.pfs))continue;
+    if(!campChPfOk(c,del.ch,del.pf))continue;
     const bucket=c[2]==="demand"?"buyer":"rest";
     let match;
     if(catKey==="total")match=true;
@@ -1000,14 +976,14 @@ function fcActualFor(year,monthNum,catKey){
 }
 // which forecast categories to show, driven by the Vertical/Side chips above the KPI scorecards
 function fcCategories(){
-  const vSel=PERF_VERT_ORDER.filter(v=>perf.verts.has(v));
+  const vSel=PERF_VERT_ORDER.filter(v=>del.verts.has(v));
   if(vSel.length){
-    const conflict=perf.sides.size&&!perf.sides.has("demand");
+    const conflict=del.sides.size&&!del.sides.has("demand");
     return{cats:vSel.map(v=>({key:v,label:FC_VERT_LABEL[v]||v})),
       note:conflict?"Vertical trong forecast chỉ thuộc nhóm Buyer — bộ lọc Side (seller/other) đang chọn không áp dụng ở phần này.":null};
   }
-  const buyerOn=perf.sides.size===0||perf.sides.has("demand");
-  const restOn=perf.sides.size===0||perf.sides.has("supply")||perf.sides.has("other");
+  const buyerOn=del.sides.size===0||del.sides.has("demand");
+  const restOn=del.sides.size===0||del.sides.has("supply")||del.sides.has("other");
   const cats=[];
   if(buyerOn)cats.push({key:"buyer",label:"BUYER"});
   if(restOn)cats.push({key:"rest",label:"REST"});
@@ -1084,7 +1060,7 @@ function renderForecastCards(){
   if(!cats.length)$("#fcCards").innerHTML=`<div class="fc-note">Không có nhóm nào khớp bộ lọc Vertical/Side hiện tại.</div>`;
   const mauNote=isMauMet?" Actual MAU/MAU w/Lead chưa tính được (payload chỉ có distinct/ngày theo campaign, không đủ suy ra distinct-tháng).":"";
   const cumNote=isCum?" Total Lead là số cộng dồn nên target đã quy đổi theo số ngày đã qua trong tháng (pace) để so công bằng với số MTD.":" Đây là chỉ số trung bình/ngày nên actual (MTD) so thẳng với target tháng, không cần quy đổi theo số ngày.";
-  const chpfNote=(perf.chs.size||perf.pfs.size)?" Actual đã lọc thêm theo Channel/Platform đang chọn ở trên; forecast (target) không có chiều này nên giữ nguyên.":"";
+  const chpfNote=(del.ch.size||del.pf.size)?" Actual đã lọc thêm theo Channel/Platform đang chọn ở trên; forecast (target) không có chiều này nên giữ nguyên.":"";
   const noteHtml=note?` <b>${esc(note)}</b>`:"";
   $("#fcDesc").innerHTML=`<b>${esc(met.label)}</b> &middot; dùng &larr;/&rarr; để xem các tháng khác (KPI chỉ có Sep&ndash;Dec 2026, nguồn: ${esc(FC.source)}, cập nhật ${esc(FC.updated)}).${cumNote} Dãy 4 cột nhỏ = target theo quý, cột đậm = tháng đang xem. Đi theo bộ lọc Vertical/Side/Channel/Platform ở trên.${noteHtml}${chpfNote}${mauNote}`;
 }
@@ -1124,15 +1100,14 @@ function perfPerDayFor(vert){
   const dau=new Array(N).fill(0),dva=new Array(N).fill(0),dsave=new Array(N).fill(0),dlead=new Array(N).fill(0);
   for(const r of PD){const c=CAMPS[r[1]];
     if(vert!==null&&c[1]!==vert)continue;
-    if(perf.sides.size&&!perf.sides.has(c[2]))continue;
-    if(!campChPfOk(c,perf.chs,perf.pfs))continue;
+    if(!campOk(r[1]))continue;
     dau[r[0]]+=r[2];dva[r[0]]+=r[3];dsave[r[0]]+=r[10];dlead[r[0]]+=r[8];}
   return{dau,dva,dsave,dlead};
 }
 function renderPerfTrend(){
   const mets=PERF_MET_ORDER.filter(m=>perf.metrics.has(m));
   // one line per selected vertical; if none selected → a single "all verticals" line
-  const vgroups=perf.verts.size?PERF_VERT_ORDER.filter(v=>perf.verts.has(v)):[null];
+  const vgroups=del.verts.size?PERF_VERT_ORDER.filter(v=>del.verts.has(v)):[null];
   const multiMet=mets.length>1, multiVert=vgroups.length>1;
   const pdBy=new Map();vgroups.forEach(vg=>pdBy.set(vg,perfPerDayFor(vg)));
   const series=[];
@@ -1154,7 +1129,7 @@ function renderPerfTrend(){
   }).join("");
   const axisNote=(hasCount&&hasPct)?" &middot; trục trái = distinct/ngày, trục phải = %":"";
   const vertNote=multiVert?" &middot; mỗi vertical 1 đường":"";
-  const {cur}=winIdx(perf);
+  const {cur}=winIdx(del);
   $("#pTrendDesc").innerHTML=`<span style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 0">${legend}</span><span>${daysLabel(cur)}${axisNote}${vertNote}.</span>`;
   drawChart({holder:$("#pTrend"),series,idx:cur,height:220});
 }
@@ -1166,18 +1141,18 @@ function delByNameInWin(cs){
   return m;
 }
 function renderPerfTbl(){
-  const {cur}=winIdx(ptbl),cs=new Set(cur);
+  const {cur}=winIdx(del),cs=new Set(cur);
   const nd=cur.length||1;          // distinct-user metrics shown as avg/day over the selected range
   const dmap=delByNameInWin(cs);   // campaign_name -> {sent,reach,opens}
   const agg=new Map();
-  for(const r of PD){if(!cs.has(r[0])||!ptblCampOk(r[1]))continue;
+  for(const r of PD){if(!cs.has(r[0])||!campOk(r[1]))continue;
     const a=agg.get(r[1])||{dau:0,dva:0,dsave:0,dlead:0,leads:0};
     a.dau+=r[2];a.dva+=r[3];a.dsave+=r[10];a.dlead+=r[8];a.leads+=r[7];agg.set(r[1],a);}
   // Union trafficked campaigns (agg) with campaigns delivered in-window but with 0 CRM traffic,
   // so send-only campaigns still appear (on-app = 0, delivery numbers shown).
   const rowCis=new Set(agg.keys());
   for(let ci=0;ci<CAMPS.length;ci++){
-    if(rowCis.has(ci)||!ptblCampOk(ci))continue;
+    if(rowCis.has(ci)||!campOk(ci))continue;
     if(dmap.has(CAMPS[ci][0]))rowCis.add(ci);}
   const ZERO={dau:0,dva:0,dsave:0,dlead:0,leads:0};
   let rows=[...rowCis].map(ci=>{const a=agg.get(ci)||ZERO;const nm=CAMPS[ci][0],d=dmap.get(nm);
@@ -1217,38 +1192,17 @@ function renderPerfTbl(){
       `<td class="num">${fmt(r.dsave)}</td><td class="num">${pct(r.crS)}</td>`;
     tb.appendChild(tr);});
   if(!rows.length)tb.innerHTML=`<tr><td colspan="${cols.length}" style="text-align:center;color:var(--muted)">không có campaign cho bộ lọc này</td></tr>`;
-  const nFilt=(ptbl.chs.size?1:0)+(ptbl.pfs.size?1:0)+(ptbl.verts.size?1:0)+(ptbl.sides.size?1:0)+(ptbl.kw.size?1:0);
-  $("#pTblNote").innerHTML=`<b>${total}</b> campaigns${total>200?" (top 200)":""}${ptbl.campSel.size?` · lọc <b>${ptbl.campSel.size}</b> campaign đã chọn`:""}${nFilt?` · <b>${nFilt}</b> bộ lọc bảng`:""} &middot; ${daysLabel(cur)} &middot; Sent/Reach/Open khớp theo campaign_name (— = không có trong send-log)`;
+  const nFilt=(del.ch.size?1:0)+(del.pf.size?1:0)+(del.tt.size?1:0)+(del.verts.size?1:0)+(del.sides.size?1:0)+(del.kw.size?1:0);
+  $("#pTblNote").innerHTML=`<b>${total}</b> campaigns${total>200?" (top 200)":""}${del.campSel.size?` · lọc <b>${del.campSel.size}</b> campaign đã chọn`:""}${nFilt?` · <b>${nFilt}</b> bộ lọc đang bật`:""} &middot; ${daysLabel(cur)} &middot; Sent/Reach/Open khớp theo campaign_name (— = không có trong send-log)`;
   th.querySelectorAll("th").forEach(h=>h.addEventListener("click",()=>{const k=h.dataset.k;
     if(perf.sort===k)perf.dir*=-1;else{perf.sort=k;perf.dir=-1;}renderPerfTbl();}));
 }
-const VERT_ITEMS=[{v:"gds",label:"gds"},{v:"veh",label:"veh"},{v:"pty",label:"pty"},{v:"jobs",label:"jobs"},{v:"other",label:"other"}];
 // section-top filters drive KPIs + Trend + the Forecast cards; the table has its own filters (renderPerfTbl)
 function renderPerfTop(){renderPerfTrend();renderForecast();}
 function renderPerf(){renderPerfTop();renderPerfTbl();}
 
-/* ---- perf SECTION filter wiring (KPIs + trend) ---- */
-$("#pRangeSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-  [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");
-  perf.range=b.dataset.r;$("#pCustomRange").classList.toggle("on",perf.range==="custom");renderPerfTop();});
-chipGroup($("#pChanChips"),DEL.channelLabels,perf.chs,()=>renderPerfTop());
-chipGroup($("#pPlatChips"),DEL.platLabels,perf.pfs,()=>renderPerfTop());
-chipGroupV($("#pVertChips"),VERT_ITEMS,perf.verts,()=>renderPerfTop());
-chipGroupV($("#pSideChips"),SIDE_CHIPS,perf.sides,()=>renderPerfTop());
-
-/* ---- "Theo campaign" TABLE-local filter wiring (independent) ---- */
-$("#ptRangeSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-  [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");
-  ptbl.range=b.dataset.r;$("#ptCustomRange").classList.toggle("on",ptbl.range==="custom");renderPerfTbl();});
-chipGroup($("#ptChanChips"),DEL.channelLabels,ptbl.chs,()=>renderPerfTbl());
-chipGroup($("#ptPlatChips"),DEL.platLabels,ptbl.pfs,()=>renderPerfTbl());
-chipGroupV($("#ptVertChips"),VERT_ITEMS,ptbl.verts,()=>renderPerfTbl());
-chipGroupV($("#ptSideChips"),SIDE_CHIPS,ptbl.sides,()=>renderPerfTbl());
-chipGroupV($("#ptKwChips"),KW_CHIPS,ptbl.kw,()=>renderPerfTbl());
-$("#ptKwChips").querySelectorAll("button.chip:not(.all)").forEach(b=>b.classList.add("kw"));
-$("#ptcStart").value=ptbl.cStart;$("#ptcEnd").value=ptbl.cEnd;
-$("#ptcStart").addEventListener("change",e=>{ptbl.cStart=e.target.value;if(ptbl.range==="custom")renderPerfTbl();});
-$("#ptcEnd").addEventListener("change",e=>{ptbl.cEnd=e.target.value;if(ptbl.range==="custom")renderPerfTbl();});
+/* Section 02 không còn thanh lọc riêng — toàn bộ chiều lọc nằm ở section 01,
+   xem phần wiring của `del` ở trên (mỗi thay đổi gọi drawAll). */
 
 $("#pMetSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   const m=b.dataset.m,on=b.getAttribute("aria-pressed")==="true";
@@ -1296,11 +1250,6 @@ function makeCampSelect({wrap,box,input,drop,count,all,state,onChange}){
   document.addEventListener("click",e=>{if(!W.contains(e.target)){open=false;D.classList.remove("on");}});
   renderCount();
 }
-makeCampSelect({wrap:"#pCampMS",box:"#pCampBox",input:"#pCampInput",drop:"#pCampDrop",count:"#pCampCount",
-  all:[...new Set(CAMPS.map(c=>c[0]))].sort((a,b)=>a.localeCompare(b)), state:ptbl.campSel, onChange:renderPerfTbl});
-$("#pcStart").value=perf.cStart;$("#pcEnd").value=perf.cEnd;
-$("#pcStart").addEventListener("change",e=>{perf.cStart=e.target.value;if(perf.range==="custom")renderPerfTop();});
-$("#pcEnd").addEventListener("change",e=>{perf.cEnd=e.target.value;if(perf.range==="custom")renderPerfTop();});
 
 /* ---------- footer + redraw ---------- */
 $("#foot").innerHTML=`<b>Delivery</b> = <code>chotot_onflow.onflow__campaign_daily</code> (Chợ Tốt only; Mudah loại qua <code>project_id</code>). Sent → Reach (delivered) → Direct open. zns không track reach → deliver rate zns = 0. Campaign &lt;1000 sent/28d gộp vào <code>(other, low-volume)</code>.<br><b>Performance</b> = traffic CRM session (<code>traffic_visit_detail</code> Growth ∩ lead/event detail), per campaign. DAU/DAU w-X là distinct/ngày → hiển thị <b>trung bình/ngày</b> trong khoảng lọc (Σ distinct ÷ số ngày); Leads là cộng dồn; CR = distinct-w-X / DAU trong cửa sổ.`;

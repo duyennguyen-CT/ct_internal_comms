@@ -68,6 +68,10 @@ iframe[hidden]{display:none}
             campaign:{tab:"tab-campaign",fr:"fr-campaign",src:"crm-onflow-campaign/",title:"CRM OnFlow Campaign"},
             reward:{tab:"tab-reward",fr:"fr-reward",src:"reward-crm-performance/",title:"Reward Performance"}};
   var loaded={};
+  // GitHub Pages gửi cache-control: max-age=600, nên sau khi deploy trình duyệt
+  // có thể hiện bản cũ tới 10 phút. Gắn thêm ?v=<mốc 5 phút> để tối đa 5 phút là
+  // tự lấy bản mới, nhưng trong cùng 5 phút vẫn dùng cache (file dashboard khá nặng).
+  var BUST="v="+Math.floor(Date.now()/3e5);
   function pick(){
     var h=(location.hash||"").replace("#","");
     if(KEYS[h])return h;
@@ -84,7 +88,7 @@ iframe[hidden]{display:none}
         if(!loaded[k]){ // lazy-load on first activation, then keep it alive
           document.getElementById("loading").style.display="flex";
           fr.addEventListener("load",function(){document.getElementById("loading").style.display="none";},{once:true});
-          fr.src=d.src;loaded[k]=true;
+          fr.src=d.src+"?"+BUST;loaded[k]=true;
         }else{document.getElementById("loading").style.display="none";}
         fr.hidden=false;
       }else{fr.hidden=true;}
