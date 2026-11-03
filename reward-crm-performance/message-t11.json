@@ -1,8 +1,32 @@
 {
-  "updated": "2026-11-03T10:32:31.513Z",
+  "updated": "2026-11-03T10:35:28.065Z",
   "updatedBy": "dashboard",
   "messages": {
     "K5.3.0": {
+      "n": ""
+    },
+    "P1.1.0": {
+      "n": ""
+    },
+    "P2.4.0": {
+      "n": "bỏ Breadtalk (hết hạn 31/10) và bTaskee (voucher đã hết hạn), thay bằng voucher đang có trong pool T11."
+    },
+    "P3.2.0": {
+      "n": ""
+    },
+    "P3.6.1": {
+      "n": ""
+    },
+    "R2.1.0": {
+      "n": ""
+    },
+    "E3.s.0": {
+      "n": "Thêm số điểm tặng vào title khi chốt."
+    },
+    "M1.s.2": {
+      "n": ""
+    },
+    "M1.s.3": {
       "n": ""
     }
   }
