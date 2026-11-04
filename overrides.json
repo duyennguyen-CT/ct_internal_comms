@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-04T11:22:11.853Z",
+  "updated": "2026-11-04T11:24:44.536Z",
   "updatedBy": "dashboard",
   "items": {
     "internal-comms-pulse|div.wrap[0]>header.top[0]>div.brand[0]>div.sub[1]": {
@@ -21,6 +21,21 @@
       "d": 1
     },
     "reward-crm-performance|#tab-perf>div.foot[2]": {
+      "d": 1
+    },
+    "crm-onflow-campaign|#secDeliv>p.sec-sub[0]": {
+      "d": 1
+    },
+    "crm-onflow-campaign|div.wrap[0]>header.top[0]>div.brand[0]>div.sub[1]": {
+      "d": 1
+    },
+    "crm-onflow-campaign|#secDeliv>div.panel[9]>div.p-head[0]>div[0]>div.p-desc[1]": {
+      "d": 1
+    },
+    "crm-onflow-campaign|#fcDesc": {
+      "d": 1
+    },
+    "crm-onflow-campaign|#secPerf>p.sec-sub[0]": {
       "d": 1
     }
   }
