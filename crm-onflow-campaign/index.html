@@ -69,6 +69,11 @@ input.search{cursor:text;min-width:210px}
 .custom-range{display:none;align-items:center;gap:8px}.custom-range.on{display:flex}
 /* searchable multi-select (campaign filter) */
 .ms{position:relative;display:inline-block}
+.ms.ms-r .ms-drop{left:auto;right:0}
+.ms-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto;margin-left:auto;max-width:100%}
+.ms-side .ctl-label{white-space:nowrap}
+.ms-side .ms-box{max-width:100%}
+.p-head-ms .ph-main{flex:1 1 280px;min-width:0}
 .ms-box{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-width:240px;max-width:380px;padding:4px 6px;border:1px solid var(--hair-strong);border-radius:8px;background:var(--surface);cursor:text}
 .ms-box:focus-within{border-color:var(--accent)}
 .ms-chips{display:inline-flex;flex-wrap:wrap;gap:5px}
@@ -275,12 +280,6 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
       <div class="ctl"><span class="ctl-label">Vertical</span><div class="chips" id="dVertChips"></div></div>
       <div class="ctl"><span class="ctl-label">Side</span><div class="chips" id="dSideChips"></div></div>
       <div class="ctl"><span class="ctl-label">Delivery type</span><div class="chips" id="dTrigChips"></div></div>
-      <div class="ctl"><span class="ctl-label">Campaign</span>
-        <div class="ms" id="dCampMS">
-          <div class="ms-box" id="dCampBox"><input type="text" class="ms-input" id="dCampInput" placeholder="t&#236;m &amp; ch&#7885;n campaign&hellip;" autocomplete="off"><span class="ms-count" id="dCampCount" hidden></span></div>
-          <div class="ms-drop" id="dCampDrop"></div>
-        </div>
-      </div>
     </div>
     <div class="controls">
       <div class="ctl"><span class="ctl-label">Quick</span><div class="chips" id="dKwChips"></div></div>
@@ -378,8 +377,16 @@ svg .grid-line{stroke:var(--grid)}svg text{font-family:"IBM Plex Mono",monospace
     </div>
 
     <div class="panel" style="margin-top:16px">
-      <div class="p-head"><div><div class="p-title">Theo campaign</div><div class="p-desc">DAU/adview/lead/save-ad = <b>trung b&#236;nh/ng&#224;y</b> (&Sigma; distinct &divide; s&#7889; ng&#224;y); <b>Leads</b> = t&#7893;ng (c&#7897;ng d&#7891;n) &middot; CR = distinct-w-X / DAU. Click header &#273;&#7875; s&#7855;p x&#7871;p. B&#7843;ng n&#224;y ch&#7841;y theo <b>b&#7897; l&#7885;c chung &#7903; section 01</b>.</div></div>
-        <div class="range-note" id="pTblNote"></div>
+      <div class="p-head p-head-ms"><div class="ph-main"><div class="p-title">Theo campaign</div><div class="p-desc">DAU/adview/lead/save-ad = <b>trung b&#236;nh/ng&#224;y</b> (&Sigma; distinct &divide; s&#7889; ng&#224;y); <b>Leads</b> = t&#7893;ng (c&#7897;ng d&#7891;n) &middot; CR = distinct-w-X / DAU. Click header &#273;&#7875; s&#7855;p x&#7871;p. B&#7843;ng n&#224;y ch&#7841;y theo <b>b&#7897; l&#7885;c chung &#7903; section 01</b>; &#244; t&#236;m campaign b&#234;n ph&#7843;i c&#361;ng &#225;p cho c&#7843; trang.</div></div>
+        <div class="ms-side">
+          <div class="ctl"><span class="ctl-label">T&#236;m campaign</span>
+            <div class="ms ms-r" id="dCampMS">
+              <div class="ms-box" id="dCampBox"><input type="text" class="ms-input" id="dCampInput" placeholder="t&#236;m &amp; ch&#7885;n campaign&hellip;" autocomplete="off"><span class="ms-count" id="dCampCount" hidden></span></div>
+              <div class="ms-drop" id="dCampDrop"></div>
+            </div>
+          </div>
+          <div class="range-note" id="pTblNote"></div>
+        </div>
       </div>
       <div class="tbl-wrap" style="margin-top:4px;box-shadow:none"><table id="pTbl"><thead></thead><tbody></tbody></table></div>
     </div>
