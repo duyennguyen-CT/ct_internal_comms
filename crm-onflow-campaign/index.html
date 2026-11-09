@@ -77,7 +77,7 @@ input.search{cursor:text;min-width:210px}
 .ms-chip .x{border:none;background:transparent;color:var(--accent);cursor:pointer;font-size:14px;line-height:1;padding:0 3px;border-radius:50%}
 .ms-chip .x:hover{background:var(--accent);color:#fff}
 .ms-input{flex:1;min-width:90px;border:none;outline:none;background:transparent;color:var(--ink);font:inherit;font-size:12.5px;padding:4px 2px}
-.ms-drop{display:none;position:absolute;left:0;top:calc(100% + 4px);z-index:20;min-width:260px;max-width:440px;max-height:300px;overflow-y:auto;background:var(--surface);border:1px solid var(--hair-strong);border-radius:10px;box-shadow:var(--shadow);padding:4px}
+.ms-drop{display:none;position:absolute;left:0;top:calc(100% + 4px);z-index:20;min-width:360px;max-width:460px;max-height:340px;overflow-y:auto;background:var(--surface);border:1px solid var(--hair-strong);border-radius:10px;box-shadow:var(--shadow);padding:4px}
 .ms-drop.on{display:block}
 .ms-opt{padding:7px 10px;border-radius:7px;font-size:12.5px;color:var(--ink-2);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ms-opt:hover{background:var(--accent-soft);color:var(--accent)}
@@ -92,6 +92,10 @@ input.search{cursor:text;min-width:210px}
 .ms-row .ck{flex:none;width:14px;text-align:center;color:var(--accent);font-weight:700}
 .ms-row .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ms-opt.sel{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.ms-facets{position:sticky;top:-4px;z-index:1;background:var(--surface);padding:4px 6px 7px;border-bottom:1px solid var(--hair);margin-bottom:3px}
+.ms-facet{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:5px}
+.ms-facet .lb{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;min-width:52px;flex:none}
+.ms-facet .chip{font-size:11px;padding:3px 9px}
 .spacer{flex:1 1 auto}.range-note{font-size:12px;color:var(--muted)}.range-note b{color:var(--ink-2);font-weight:600}
 
 .kpis{display:grid;gap:14px;margin:14px 0 8px}
@@ -505,8 +509,9 @@ function drawChart(opts){
 /* ---------- quick keyword filter (matches campaign NAME, case-insensitive) ---------- */
 const KW_CHIPS=[
   {v:"reward",label:"reward",subs:["reward"],title:'tên chứa "reward" (vd awo_rewards)'},
-  {v:"b2s",label:"b2s",subs:["b2s"],title:'Back To School — tên chứa "b2s"'},
-  {v:"thodia",label:"thodia",subs:["thodia","tho_dia"],title:'Thổ Địa — tên chứa "thodia"/"tho_dia"'}
+  {v:"awo",label:"awo",subs:["awo"],title:'tên chứa "awo" — gồm cả AwoRewards lẫn nhóm win-back L8to15d/L16to30d'},
+  {v:"thodia",label:"thodia",subs:["thodia","tho_dia"],title:'Thổ Địa — tên chứa "thodia"/"tho_dia"'},
+  {v:"b2s",label:"b2s",subs:["b2s"],title:'Back To School — tên chứa "b2s"'}
 ];
 const KW_MAP=Object.fromEntries(KW_CHIPS.map(k=>[k.v,k.subs]));
 // name passes if it matches ANY active keyword (OR). Empty set => no filter (caller skips).
@@ -1214,9 +1219,19 @@ $("#pMetSeg").addEventListener("click",e=>{const b=e.target.closest("button");if
 // Compact: the box shows a search input + a "N đã chọn ✕" count pill (no chip stack).
 // The dropdown is a checkable list — selected rows keep a ✓ and stay in place; type to filter,
 // with "chọn tất cả kết quả" / "bỏ chọn tất cả" headers. State is a Set of campaign names.
+/* Thu hẹp danh sách trong ô search theo vertical / theme. Đây là bộ lọc CỦA Ô
+   SEARCH — chỉ đổi danh sách gợi ý để dễ tìm, không đụng tới bộ lọc chung của
+   trang. Campaign chỉ thật sự được lọc khi bấm chọn (hoặc "Chọn tất cả"). */
 function makeCampSelect({wrap,box,input,drop,count,all,state,onChange}){
   const W=$(wrap), B=$(box), I=$(input), D=$(drop), C=$(count);
   let open=false;
+  const fVert=new Set(), fTheme=new Set();
+  const FACETS=[
+    {lb:"Vertical",items:VERT_ITEMS.filter(v=>v.v!=="other"),set:fVert,
+     ok:nm=>{const s=NAME_VERT.get(nm);return !!s&&[...fVert].some(v=>s.has(v));}},
+    {lb:"Theme",items:KW_CHIPS,set:fTheme,ok:nm=>kwMatch(nm,fTheme)}
+  ];
+  const facetOk=nm=>FACETS.every(f=>!f.set.size||f.ok(nm));
   function renderCount(){
     if(state.size){C.hidden=false;C.innerHTML=`${state.size} đã chọn <button type="button" class="x" aria-label="bỏ chọn tất cả">×</button>`;
       C.querySelector(".x").addEventListener("mousedown",ev=>{ev.preventDefault();ev.stopPropagation();state.clear();sync();});}
@@ -1224,13 +1239,30 @@ function makeCampSelect({wrap,box,input,drop,count,all,state,onChange}){
   }
   function opt(cls,html,onPick){const o=el("div","ms-opt"+(cls?" "+cls:""),html);
     o.addEventListener("mousedown",ev=>{ev.preventDefault();onPick();});return o;}
+  function renderFacets(){
+    const box=el("div","ms-facets");
+    FACETS.forEach(f=>{
+      const row=el("div","ms-facet");row.appendChild(el("span","lb",f.lb));
+      const allBtn=el("button","chip all","All");allBtn.type="button";
+      allBtn.setAttribute("aria-pressed",f.set.size?"false":"true");
+      allBtn.addEventListener("mousedown",ev=>{ev.preventDefault();f.set.clear();renderDrop();});
+      row.appendChild(allBtn);
+      f.items.forEach(it=>{const b=el("button","chip",it.label);b.type="button";if(it.title)b.title=it.title;
+        b.setAttribute("aria-pressed",f.set.has(it.v)?"true":"false");
+        b.addEventListener("mousedown",ev=>{ev.preventDefault();
+          f.set.has(it.v)?f.set.delete(it.v):f.set.add(it.v);renderDrop();});
+        row.appendChild(b);});
+      box.appendChild(row);});
+    return box;
+  }
   function renderDrop(){
     if(!open){D.classList.remove("on");return;}
     const q=I.value.trim().toLowerCase();
-    const matches=all.filter(nm=>!q||nm.toLowerCase().includes(q));
+    const matches=all.filter(nm=>facetOk(nm)&&(!q||nm.toLowerCase().includes(q)));
     const unsel=matches.filter(nm=>!state.has(nm));
     D.innerHTML="";
-    if(unsel.length)D.appendChild(opt("ms-all",`＋ Chọn tất cả ${unsel.length}${q?" kết quả":""}`,
+    D.appendChild(renderFacets());
+    if(unsel.length)D.appendChild(opt("ms-all",`＋ Chọn tất cả ${unsel.length}${q||fVert.size||fTheme.size?" kết quả":""}`,
       ()=>{unsel.forEach(nm=>state.add(nm));sync();}));
     if(state.size)D.appendChild(opt("ms-clear",`✕ Bỏ chọn tất cả (${state.size})`,()=>{state.clear();sync();}));
     const shown=matches.slice(0,80);
